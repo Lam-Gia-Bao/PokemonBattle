@@ -8,16 +8,16 @@ public class MainGame {
         // Tạo team cho player
         PokemonTeam playerTeam = new PokemonTeam();
         playerTeam.addPokemon(PokemonData.pokemonGreninja());
-        playerTeam.addPokemon(PokemonData.pokemonCharizard());
+        playerTeam.addPokemon(PokemonData.pokemonRayquaza());
         playerTeam.addPokemon(PokemonData.pokemonPikachu());
-        playerTeam.addPokemon(PokemonData.pokemonSuicune());
+        playerTeam.addPokemon(PokemonData.pokemonArceus());
         
         // Tạo team cho AI
         PokemonTeam aiTeam = new PokemonTeam();
         aiTeam.addPokemon(PokemonData.pokemonCharizard());
-        aiTeam.addPokemon(PokemonData.pokemonPidgey());
+        aiTeam.addPokemon(PokemonData.pokemonGiratina());
         aiTeam.addPokemon(PokemonData.pokemonHaxorus());
-        aiTeam.addPokemon(PokemonData.pokemonGreninja());
+        aiTeam.addPokemon(PokemonData.pokemonJirachi());
 
         BattleController controller = new BattleController(playerTeam, aiTeam);
         controller.startBattle();

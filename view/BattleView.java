@@ -39,7 +39,7 @@ public class BattleView extends JFrame {
         aiBar = new HealthBarView(currentAi, false);
         playerBar = new HealthBarView(currentPlayer, true);
         message = new MessageView("What will " + currentPlayer.getName() + " do?");
-        command = new CommandView(controller, currentPlayer, playerTeam);
+        command = new CommandView(controller, currentPlayer, playerTeam, message);
 
         loadImg.add(aiBar);
         loadImg.add(playerBar);
@@ -72,7 +72,49 @@ public class BattleView extends JFrame {
     }
     
     public void enableMoveButtons() {
-        command.enableMainButtons(true);
+        // enable full player interaction (main buttons + move buttons)
+        command.enablePlayerInteraction();
+    }
+    
+    // Delegate methods từ MessageView
+    public void showAttackMessage(Pokemon attacker, String moveName, int damage) {
+        message.showAttackMessage(attacker, moveName, damage);
+    }
+    
+    public void showPokemonFaintedWithReplacement(Pokemon faintedPokemon, Pokemon nextPokemon, boolean isOpponent) {
+        message.showPokemonFaintedWithReplacement(faintedPokemon, nextPokemon, isOpponent);
+    }
+    
+    public void showGameOverMessage(Pokemon faintedPokemon, boolean playerWon) {
+        message.showGameOverMessage(faintedPokemon, playerWon);
+    }
+    
+    public void showSwitchPokemonMessage(Pokemon newPokemon) {
+        message.showSwitchPokemonMessage(newPokemon);
+    }
+    
+    public void showCannotSwitchMessage() {
+        message.showCannotSwitchMessage();
+    }
+    
+    public void showNoBagItemsMessage() {
+        message.showNoBagItemsMessage();
+    }
+    
+    public void showCannotRunMessage() {
+        message.showCannotRunMessage();
+    }
+    
+    public void addMessageToQueue(String msg) {
+        message.addMessageToQueue(msg);
+    }
+    
+    public void startMessageQueue(Runnable onComplete) {
+        message.startMessageQueue(onComplete);
+    }
+    
+    public void clearMessageQueue() {
+        message.clearQueue();
     }
 
     public BattleController getController() {

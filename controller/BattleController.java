@@ -26,9 +26,11 @@ public class BattleController {
         if (index < 0 || index >= player.getMoves().size()) 
             return;
         
+        view.disableAllButtons();
+        
         Move move = player.getMoves().get(index);
         int dmg = player.attack(ai, move);
-        view.showMessage(player.getName() + " used " + move.getName() + "! It dealt " + dmg + " damage!");
+        view.addMessageToQueue(player.getName() + " used " + move.getName() + "! It dealt " + dmg + " damage!");
         view.updateHPBars();
 
         if (ai.isFainted()) {
@@ -36,10 +38,15 @@ public class BattleController {
             if (aiTeam.switchToNextActivePokemon()) {
                 Pokemon nextAiPokemon = aiTeam.getCurrentPokemon();
                 view.updateUI(playerTeam.getCurrentPokemon(), nextAiPokemon);
-                view.showMessage(ai.getName() + " fainted! Opponent sends out " + nextAiPokemon.getName() + "!");
+                view.addMessageToQueue(ai.getName() + " fainted! Opponent sends out " + nextAiPokemon.getName() + "!");
+                view.startMessageQueue(() -> {
+                    view.enableMoveButtons();
+                });
             } else {
-                view.showMessage(ai.getName() + " fainted! You win!");
-                view.disableAllButtons();
+                view.addMessageToQueue(ai.getName() + " fainted! You win!");
+                view.startMessageQueue(() -> {
+                    view.disableAllButtons();
+                });
             }
             return;
         }
@@ -47,7 +54,7 @@ public class BattleController {
         // AI phản công
         Move aiMove = AI.chooseBestMove(ai, player);
         int aiDmg = ai.attack(player, aiMove);
-        view.showMessage(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
+        view.addMessageToQueue(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
         view.updateHPBars();
 
         if (player.isFainted()) {
@@ -55,12 +62,20 @@ public class BattleController {
             if (playerTeam.switchToNextActivePokemon()) {
                 Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
                 view.updateUI(nextPlayerPokemon, ai);
-                view.showMessage(player.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
-                view.enableMoveButtons();
+                view.addMessageToQueue(player.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
+                view.startMessageQueue(() -> {
+                    view.enableMoveButtons();
+                });
             } else {
-                view.showMessage(player.getName() + " fainted! You lost...");
-                view.disableAllButtons();
+                view.addMessageToQueue(player.getName() + " fainted! You lost...");
+                view.startMessageQueue(() -> {
+                    view.disableAllButtons();
+                });
             }
+        } else {
+            view.startMessageQueue(() -> {
+                view.enableMoveButtons();
+            });
         }
     }
     
@@ -69,28 +84,36 @@ public class BattleController {
             Pokemon nextPokemon = playerTeam.getCurrentPokemon();
             Pokemon ai = aiTeam.getCurrentPokemon();
             view.updateUI(nextPokemon, ai);
-            view.showMessage("Go " + nextPokemon.getName() + "!");
+            view.addMessageToQueue("Go " + nextPokemon.getName() + "!");
             view.updateHPBars();
             
             // AI tấn công
             Move aiMove = AI.chooseBestMove(ai, nextPokemon);
             int aiDmg = ai.attack(nextPokemon, aiMove);
-            view.showMessage(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
+            view.addMessageToQueue(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
             view.updateHPBars();
             
             if (nextPokemon.isFainted()) {
                 if (playerTeam.switchToNextActivePokemon()) {
                     Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
                     view.updateUI(nextPlayerPokemon, ai);
-                    view.showMessage(nextPokemon.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
-                    view.enableMoveButtons();
+                    view.addMessageToQueue(nextPokemon.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
+                    view.startMessageQueue(() -> {
+                        view.enableMoveButtons();
+                    });
                 } else {
-                    view.showMessage(nextPokemon.getName() + " fainted! You lost...");
-                    view.disableAllButtons();
+                    view.addMessageToQueue(nextPokemon.getName() + " fainted! You lost...");
+                    view.startMessageQueue(() -> {
+                        view.disableAllButtons();
+                    });
                 }
+            } else {
+                view.startMessageQueue(() -> {
+                    view.enableMoveButtons();
+                });
             }
         } else {
-            view.showMessage("Can't switch to that Pokémon!");
+            view.showCannotSwitchMessage();
         }
     }
     

@@ -13,10 +13,9 @@ public class CommandView extends JPanel {
     private JButton[] moveButtons;
     private JPanel pokemonPanel;
     private JButton[] pokemonButtons;
-    private MessageView message;
     private BattleController controller;
 
-    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam) {
+    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, MessageView message) {
         this.controller = controller;
         setLayout(null);
         setOpaque(false);
@@ -84,12 +83,12 @@ public class CommandView extends JPanel {
             showMovePanel(true);
             enableMainButtons(false);
         });
-        bagBtn.addActionListener(e -> message.setMessage("You have no items!"));
+        bagBtn.addActionListener(e -> message.showNoBagItemsMessage());
         pokeBtn.addActionListener(e -> {
             showPokemonPanel(true);
             enableMainButtons(false);
         });
-        runBtn.addActionListener(e -> message.setMessage("Can't run from a trainer battle!"));
+        runBtn.addActionListener(e -> message.showCannotRunMessage());
     }
 
     private JButton createButton(String text, int x, int y, int w, int h) {
@@ -101,6 +100,13 @@ public class CommandView extends JPanel {
 
     public void showMovePanel(boolean show) {
         movePanel.setVisible(show);
+        if (show && moveButtons != null) {
+            // ensure move buttons are enabled when showing the panel
+            for (JButton b : moveButtons) {
+                if (b != null)
+                    b.setEnabled(true);
+            }
+        }
     }
     
     public void showPokemonPanel(boolean show) {
@@ -112,6 +118,17 @@ public class CommandView extends JPanel {
         bagBtn.setEnabled(enable);
         pokeBtn.setEnabled(enable);
         runBtn.setEnabled(enable);
+    }
+
+    // Enable full interaction for player's turn (main buttons + move buttons + pokemon buttons)
+    public void enablePlayerInteraction() {
+        enableMainButtons(true);
+        if (moveButtons != null) {
+            for (JButton b : moveButtons) if (b != null) b.setEnabled(true);
+        }
+        if (pokemonButtons != null) {
+            for (JButton b : pokemonButtons) if (b != null) b.setEnabled(true);
+        }
     }
 
     public void disableAll() {
