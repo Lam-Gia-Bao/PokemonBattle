@@ -53,6 +53,9 @@ public class BattleView extends JFrame {
     }
     
     private void showStartBattleMessages(Pokemon playerPokemon, Pokemon aiPokemon) {
+        // Disable tất cả buttons cho đến khi hết message khởi đầu
+        command.disableAll();
+        
         addMessageToQueue("Player đã chọn " + playerPokemon.getName());
         addMessageToQueue("AI đã chọn " + aiPokemon.getName());
         addMessageToQueue("Tiến lên! " + playerPokemon.getName());
