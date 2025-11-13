@@ -3,22 +3,23 @@ package view;
 import javax.swing.*;
 
 import model.Pokemon;
+import model.PokemonTeam;
 import controller.BattleController;
 
 public class BattleView extends JFrame {
     private BattleController controller;
-    private Pokemon player;
-    private Pokemon ai;
+    private PokemonTeam playerTeam;
+    private PokemonTeam aiTeam;
     private LoadImgView loadImg;
     private HealthBarView playerBar;
     private HealthBarView aiBar;
     private MessageView message;
     private CommandView command;
 
-    public BattleView(BattleController controller, Pokemon player, Pokemon ai) {
+    public BattleView(BattleController controller, PokemonTeam playerTeam, PokemonTeam aiTeam) {
         this.controller = controller;
-        this.player = player;
-        this.ai = ai;
+        this.playerTeam = playerTeam;
+        this.aiTeam = aiTeam;
         initUI();
     }
 
@@ -28,14 +29,17 @@ public class BattleView extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         
+        Pokemon currentPlayer = playerTeam.getCurrentPokemon();
+        Pokemon currentAi = aiTeam.getCurrentPokemon();
+        
         loadImg = new LoadImgView();
-        loadImg.loadPokemonImages(player, ai);
+        loadImg.loadPokemonImages(currentPlayer, currentAi);
         loadImg.setLayout(null);
 
-        aiBar = new HealthBarView(ai, false);
-        playerBar = new HealthBarView(player, true);
-        message = new MessageView("What will " + player.getName() + " do?");
-        command = new CommandView(controller, player);
+        aiBar = new HealthBarView(currentAi, false);
+        playerBar = new HealthBarView(currentPlayer, true);
+        message = new MessageView("What will " + currentPlayer.getName() + " do?");
+        command = new CommandView(controller, currentPlayer, playerTeam);
 
         loadImg.add(aiBar);
         loadImg.add(playerBar);
@@ -56,6 +60,19 @@ public class BattleView extends JFrame {
 
     public void disableAllButtons() {
         command.disableAll();
+    }
+    
+    public void updateUI(Pokemon newPlayer, Pokemon newAi) {
+        playerBar.setPokemon(newPlayer);
+        aiBar.setPokemon(newAi);
+        loadImg.loadPokemonImages(newPlayer, newAi);
+        loadImg.repaint();
+        command.updateMovePanel(newPlayer);
+        updateHPBars();
+    }
+    
+    public void enableMoveButtons() {
+        command.enableMainButtons(true);
     }
 
     public BattleController getController() {

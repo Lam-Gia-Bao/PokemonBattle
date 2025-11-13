@@ -45,6 +45,14 @@ public class Pokemon {
 		return moves;
 	}
 	
+	public PokemonType getType() {
+		return type;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+	
 	//Hàm kiểm tra pokemon có bị hạ gục hay chưa
 	public boolean isFainted() {
 		return hp <= 0;
@@ -62,7 +70,7 @@ public class Pokemon {
 		if (!move.isUsable())
 			return 0;
 		move.useMove();
-		int damage = (int) (((atk - target.def / 2) * move.getPower()) / 10.0);
+		int damage = (int) (((atk - target.def / 2) + move.getPower()) / 10.0);
 		if (damage < 1)
 			damage = 1;
 		target.receiveDmg(damage);

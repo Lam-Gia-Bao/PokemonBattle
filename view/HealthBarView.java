@@ -10,11 +10,9 @@ import model.Pokemon;
 
 public class HealthBarView extends JPanel {
 	private Pokemon pokemon;
-	private boolean isPlayer;
 
 	public HealthBarView(Pokemon pokemon, boolean isPlayer) {
 		this.pokemon = pokemon;
-		this.isPlayer = isPlayer;
 
 		setLayout(null);
 		setOpaque(false);
@@ -96,6 +94,11 @@ public class HealthBarView extends JPanel {
 
 	// Cập nhật thanh máu
 	public void updateHP() {
+		repaint();
+	}
+	
+	public void setPokemon(Pokemon pokemon) {
+		this.pokemon = pokemon;
 		repaint();
 	}
 }

@@ -4,15 +4,20 @@ import javax.swing.*;
 import java.awt.*;
 import model.Move;
 import model.Pokemon;
+import model.PokemonTeam;
 import controller.BattleController;
 
 public class CommandView extends JPanel {
     private JButton fightBtn, bagBtn, pokeBtn, runBtn;
     private JPanel movePanel;
     private JButton[] moveButtons;
+    private JPanel pokemonPanel;
+    private JButton[] pokemonButtons;
     private MessageView message;
+    private BattleController controller;
 
-    public CommandView(BattleController controller, Pokemon player) {
+    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam) {
+        this.controller = controller;
         setLayout(null);
         setOpaque(false);
         setBounds(820, 470, 440, 180);
@@ -48,6 +53,31 @@ public class CommandView extends JPanel {
         }
 
         add(movePanel);
+        
+        // Panel lựa chọn pokemon
+        pokemonPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        pokemonPanel.setBounds(0, 0, 440, 130);
+        pokemonPanel.setVisible(false);
+        pokemonButtons = new JButton[playerTeam.getTeamSize()];
+        
+        for (int i = 0; i < pokemonButtons.length; i++) {
+            final int idx = i;
+            Pokemon poke = playerTeam.getTeam().get(i);
+            String status = poke.isFainted() ? " (FAINTED)" : "";
+            pokemonButtons[i] = new JButton(poke.getName() + status);
+            pokemonButtons[i].setFont(new Font("Arial", Font.BOLD, 16));
+            pokemonButtons[i].setEnabled(!poke.isFainted() && idx != playerTeam.getCurrentIndex());
+            
+            pokemonButtons[i].addActionListener(e -> {
+                showPokemonPanel(false);
+                enableMainButtons(true);
+                controller.switchPokemon(idx);
+                updateMovePanel(controller.getPlayerTeam().getCurrentPokemon());
+            });
+            pokemonPanel.add(pokemonButtons[i]);
+        }
+        
+        add(pokemonPanel);
 
         // Sự kiện nút chính
         fightBtn.addActionListener(e -> {
@@ -55,7 +85,10 @@ public class CommandView extends JPanel {
             enableMainButtons(false);
         });
         bagBtn.addActionListener(e -> message.setMessage("You have no items!"));
-        pokeBtn.addActionListener(e -> message.setMessage("No other Pokémon available!"));
+        pokeBtn.addActionListener(e -> {
+            showPokemonPanel(true);
+            enableMainButtons(false);
+        });
         runBtn.addActionListener(e -> message.setMessage("Can't run from a trainer battle!"));
     }
 
@@ -69,6 +102,10 @@ public class CommandView extends JPanel {
     public void showMovePanel(boolean show) {
         movePanel.setVisible(show);
     }
+    
+    public void showPokemonPanel(boolean show) {
+        pokemonPanel.setVisible(show);
+    }
 
     public void enableMainButtons(boolean enable) {
         fightBtn.setEnabled(enable);
@@ -80,5 +117,27 @@ public class CommandView extends JPanel {
     public void disableAll() {
         enableMainButtons(false);
         for (JButton b : moveButtons) b.setEnabled(false);
+        for (JButton b : pokemonButtons) b.setEnabled(false);
+    }
+    
+    public void updateMovePanel(Pokemon pokemon) {
+        movePanel.removeAll();
+        moveButtons = new JButton[pokemon.getMoves().size()];
+        
+        for (int i = 0; i < moveButtons.length; i++) {
+            final int idx = i;
+            Move move = pokemon.getMoves().get(i);
+            moveButtons[i] = new JButton(move.getName());
+            moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
+            moveButtons[i].addActionListener(e -> {
+                showMovePanel(false);
+                enableMainButtons(true);
+                controller.playerMove(idx);
+            });
+            movePanel.add(moveButtons[i]);
+        }
+        
+        movePanel.revalidate();
+        movePanel.repaint();
     }
 }
