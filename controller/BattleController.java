@@ -68,6 +68,7 @@ public class BattleController {
             Pokemon ai = aiTeam.getCurrentPokemon();
             view.updateUI(nextPokemon, ai);
             view.queuePlayerPokemonSelectedMessage(nextPokemon);
+            view.queuePokemonPraiseMessage(nextPokemon);
             view.queuePokemonEnterMessage(nextPokemon);
             
             aiMove();

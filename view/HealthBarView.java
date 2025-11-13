@@ -17,7 +17,7 @@ public class HealthBarView extends JPanel {
 		setLayout(null);
 		setOpaque(false);
 
-		// Đặt vị trí khung HP cho Player và AI
+		//Đặt vị trí khung HP cho Player và AI
 		if (isPlayer) {
 			setBounds(120, 520, 300, 80);
 		} else {
@@ -29,13 +29,13 @@ public class HealthBarView extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		// Hiển thị tên Pokémon
+		//Hiển thị tên Pokémon
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Arial", Font.BOLD, 20));
 		String label = pokemon.getName();
 		g.drawString(label, 10, 20);
 
-		// Hiển thị thanh máu
+		//Hiển thị thanh máu
 		int barX = 10;
 		int barY = 35;
 		int barWidth = 250;
@@ -47,7 +47,7 @@ public class HealthBarView extends JPanel {
 		drawHealthBar(g, currHp, maxHp, barX, barY, barWidth, barHeight);
 	}
 
-	// Thanh máu và đổi màu thanh máu theo lượng HP
+	//Thanh máu và đổi màu thanh máu theo lượng HP
 	private void drawHealthBar(Graphics g, int currHp, int maxHp, int x, int y, int width, int height) {
 		// Vẽ khung
 		g.setColor(Color.BLACK);

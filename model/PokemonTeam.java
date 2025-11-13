@@ -48,7 +48,7 @@ public class PokemonTeam {
         return team.size();
     }
     
-    // Kiểm tra xem team có còn pokemon sống không
+    // Kiểm tra xem team còn pokemon sống không
     public boolean hasActivePokemon() {
         for (Pokemon pokemon : team) {
             if (!pokemon.isFainted()) {
@@ -58,7 +58,7 @@ public class PokemonTeam {
         return false;
     }
     
-    // Tìm pokemon sống tiếp theo
+    // Kiểm tra team còn pokemon để đổi hay không
     public boolean switchToNextActivePokemon() {
         for (int i = 0; i < team.size(); i++) {
             if (i != currentIndex && !team.get(i).isFainted()) {

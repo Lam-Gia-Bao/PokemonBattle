@@ -70,7 +70,7 @@ public class Pokemon {
 		if (!move.isUsable())
 			return 0;
 		move.useMove();
-		int damage = (int) (((atk - target.def / 2) + move.getPower()) / 10.0);
+		int damage = (int) (((atk - target.def / 2) + move.getPower()));
 		if (damage < 1)
 			damage = 1;
 		target.receiveDmg(damage);

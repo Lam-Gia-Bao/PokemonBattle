@@ -97,7 +97,7 @@ public class MessageView extends JPanel {
                 isWaiting = true;
                 clickToContinueLabel.setVisible(true);
             } else {
-                // Tất cả message đã hiển thị, cho phép chơi tiếp
+                // Tất cả message trong hàng đợi đã hiển thị, cho phép chơi tiếp
                 clickToContinueLabel.setVisible(false);
                 isWaiting = false;
                 if (onQueueComplete != null) {
@@ -187,5 +187,42 @@ public class MessageView extends JPanel {
     // Message Lose
     public void showLoseMessage() {
         setMessage("Bạn đã thua...");
+    }
+    
+    // Hàng đợi message cho tấn công
+    public void queueUsingMoveMessage(Pokemon attacker, String moveName) {
+        addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+    }
+    
+    public void queueDamageMessage(int damage, String moveName) {
+        addMessageToQueue(moveName + " đã gây " + damage + " sát thương!");
+    }
+    
+    public void queuePokemonFaintedMessage(Pokemon pokemon) {
+        addMessageToQueue(pokemon.getName() + " đã bị hạ gục!");
+    }
+    
+    public void queueAIPokemonSelectedMessage(Pokemon pokemon) {
+        addMessageToQueue("AI đã chọn " + pokemon.getName());
+    }
+    
+    public void queuePlayerPokemonSelectedMessage(Pokemon pokemon) {
+        addMessageToQueue("Player đã lựa chọn " + pokemon.getName());
+    }
+    
+    public void queuePokemonEnterMessage(Pokemon pokemon) {
+        addMessageToQueue("Tiến lên! " + pokemon.getName());
+    }
+    
+    public void queuePokemonPraiseMessage(Pokemon pokemon) {
+        addMessageToQueue("Làm tốt lắm! " + pokemon.getName());
+    }
+    
+    public void queueWinMessage() {
+        addMessageToQueue("Bạn đã chiến thắng!");
+    }
+    
+    public void queueLoseMessage() {
+        addMessageToQueue("Bạn đã thua...");
     }
 }

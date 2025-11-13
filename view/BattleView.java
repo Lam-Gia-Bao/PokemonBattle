@@ -48,20 +48,20 @@ public class BattleView extends JFrame {
 
         add(loadImg);
         
-        // Hiển thị message lần lượt khi bắt đầu trận
         showStartBattleMessages(currentPlayer, currentAi);
     }
     
+    //Hiển thị message lần lượt khi bắt đầu trận đấu
     private void showStartBattleMessages(Pokemon playerPokemon, Pokemon aiPokemon) {
-        // Disable tất cả buttons cho đến khi hết message khởi đầu
+        //Khóa các nút hành động cho đến khi hết message bắt đầu trận đấu
         command.disableAll();
         
-        addMessageToQueue("Player đã chọn " + playerPokemon.getName());
-        addMessageToQueue("AI đã chọn " + aiPokemon.getName());
-        addMessageToQueue("Tiến lên! " + playerPokemon.getName());
+        addMessageToQueue("Player đã chọn " + playerPokemon.getName() + ".");
+        addMessageToQueue("AI đã chọn " + aiPokemon.getName() + ".");
+        addMessageToQueue("Tiến lên! " + playerPokemon.getName() + "!");
         addMessageToQueue(playerPokemon.getName() + " sẽ làm gì?");
         startMessageQueue(() -> {
-            // Sau khi hết message khởi đầu, cho phép người chơi chơi
+            //Sau khi hết message bắt đầu trận đấu, cho phép người chơi bắt đầu lượt chơi
             command.enablePlayerInteraction();
         });
     }
@@ -89,11 +89,10 @@ public class BattleView extends JFrame {
     }
     
     public void enableMoveButtons() {
-        // enable full player interaction (main buttons + move buttons)
         command.enablePlayerInteraction();
     }
     
-    // Delegate methods từ MessageView
+    //Gọi các thoại từ MessageView
     public void showCannotSwitchMessage() {
         message.showCannotSwitchMessage();
     }
@@ -118,41 +117,41 @@ public class BattleView extends JFrame {
         message.clearQueue();
     }
     
-    // Methods để queue message từ MessageView
+    //Hàng đợi các message để các thoại có thể hiển thị lần lượt
     public void queueUsingMoveMessage(Pokemon attacker, String moveName) {
-        addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+        message.queueUsingMoveMessage(attacker, moveName);
     }
     
     public void queueDamageMessage(int damage, String moveName) {
-        addMessageToQueue(moveName + " đã gây " + damage + " sát thương!");
+        message.queueDamageMessage(damage, moveName);
     }
     
     public void queuePokemonFaintedMessage(Pokemon pokemon) {
-        addMessageToQueue(pokemon.getName() + " đã bị hạ gục!");
+        message.queuePokemonFaintedMessage(pokemon);
     }
     
     public void queueAIPokemonSelectedMessage(Pokemon pokemon) {
-        addMessageToQueue("AI đã chọn " + pokemon.getName());
+        message.queueAIPokemonSelectedMessage(pokemon);
     }
     
     public void queuePlayerPokemonSelectedMessage(Pokemon pokemon) {
-        addMessageToQueue("Player đã lựa chọn " + pokemon.getName());
+        message.queuePlayerPokemonSelectedMessage(pokemon);
     }
     
     public void queuePokemonEnterMessage(Pokemon pokemon) {
-        addMessageToQueue("Tiến lên! " + pokemon.getName());
+        message.queuePokemonEnterMessage(pokemon);
     }
     
     public void queuePokemonPraiseMessage(Pokemon pokemon) {
-        addMessageToQueue("Làm tốt lắm! " + pokemon.getName());
+        message.queuePokemonPraiseMessage(pokemon);
     }
     
     public void queueWinMessage() {
-        addMessageToQueue("Bạn đã chiến thắng!");
+        message.queueWinMessage();
     }
     
     public void queueLoseMessage() {
-        addMessageToQueue("Bạn đã thua...");
+        message.queueLoseMessage();
     }
 
     public BattleController getController() {
