@@ -1,7 +1,6 @@
 package model;
 
 public class AI {
-
 	public static Move chooseBestMove(Pokemon ai, Pokemon player) {
 		Move bestMove = null;
 		double bestScore = Double.NEGATIVE_INFINITY;

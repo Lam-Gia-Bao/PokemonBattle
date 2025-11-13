@@ -19,10 +19,12 @@ public class BattleController {
         view.setVisible(true);
     }
     
+    //Lượt của player
     public void playerMove(int index) {
         Pokemon player = playerTeam.getCurrentPokemon();
         Pokemon ai = aiTeam.getCurrentPokemon();
         
+        //Kiểm tra ngoại lệ (nếu pokemon không hợp lệ hoặc tất cả pokemon đã hạ gục) -> không làm gì cả
         if (player == null || ai == null) return;
         if (index < 0 || index >= player.getMoves().size()) 
             return;
@@ -37,7 +39,7 @@ public class BattleController {
 
         if (ai.isFainted()) {
             view.queuePokemonFaintedMessage(ai);
-            // Kiểm tra xem AI có pokemon khác không
+            // Kiểm tra xem AI còn pokemon khác không
             if (aiTeam.switchToNextActivePokemon()) {
                 Pokemon nextAiPokemon = aiTeam.getCurrentPokemon();
                 view.updateUI(playerTeam.getCurrentPokemon(), nextAiPokemon);
@@ -53,42 +55,12 @@ public class BattleController {
             }
             return;
         }
-    }
-
-    public void aiMove() {
-        Pokemon player = playerTeam.getCurrentPokemon();
-        Pokemon ai = aiTeam.getCurrentPokemon();
+        
         // AI phản công
-        Move aiMove = AI.chooseBestMove(ai, player);
-        int aiDmg = ai.attack(player, aiMove);
-        view.queueUsingMoveMessage(ai, aiMove.getName());
-        view.queueDamageMessage(aiDmg, aiMove.getName());
-        view.updateHPBars();
-
-        if (player.isFainted()) {
-            view.queuePokemonFaintedMessage(player);
-            // Kiểm tra xem player có pokemon khác không
-            if (playerTeam.switchToNextActivePokemon()) {
-                Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
-                view.updateUI(nextPlayerPokemon, ai);
-                view.queuePokemonPraiseMessage(player);
-                view.queuePokemonEnterMessage(nextPlayerPokemon);
-                view.startMessageQueue(() -> {
-                    view.enableMoveButtons();
-                });
-            } else {
-                view.queueLoseMessage();
-                view.startMessageQueue(() -> {
-                    view.disableAllButtons();
-                });
-            }
-        } else {
-            view.startMessageQueue(() -> {
-                view.enableMoveButtons();
-            });
-        }
+        aiMove();
     }
     
+    //Khi player đổi pokemon, player sẽ bị mất lượt tấn công và sẽ đến lượt AI tấn công
     public void switchPokemon(int pokemonIndex) {
         if (playerTeam.switchPokemon(pokemonIndex)) {
             view.disableAllButtons();
@@ -98,36 +70,38 @@ public class BattleController {
             view.queuePlayerPokemonSelectedMessage(nextPokemon);
             view.queuePokemonEnterMessage(nextPokemon);
             
-            // AI tấn công
-            Move aiMove = AI.chooseBestMove(ai, nextPokemon);
-            int aiDmg = ai.attack(nextPokemon, aiMove);
-            view.queueUsingMoveMessage(ai, aiMove.getName());
-            view.queueDamageMessage(aiDmg, aiMove.getName());
-            view.updateHPBars();
-            
-            if (nextPokemon.isFainted()) {
-                view.queuePokemonFaintedMessage(nextPokemon);
-                if (playerTeam.switchToNextActivePokemon()) {
-                    Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
-                    view.updateUI(nextPlayerPokemon, ai);
-                    view.queuePokemonPraiseMessage(nextPokemon);
-                    view.queuePokemonEnterMessage(nextPlayerPokemon);
-                    view.startMessageQueue(() -> {
-                        view.enableMoveButtons();
-                    });
-                } else {
-                    view.queueLoseMessage();
-                    view.startMessageQueue(() -> {
-                        view.disableAllButtons();
-                    });
-                }
-            } else {
-                view.startMessageQueue(() -> {
-                    view.enableMoveButtons();
-                });
-            }
+            aiMove();
         } else {
             view.showCannotSwitchMessage();
+        }
+    }
+
+    //Lượt của AI
+    private void aiMove() {
+        Pokemon player = playerTeam.getCurrentPokemon();
+        Pokemon ai = aiTeam.getCurrentPokemon();
+
+        Move aiMove = AI.chooseBestMove(ai, player);
+        int aiDmg = ai.attack(player, aiMove);
+
+        view.queueUsingMoveMessage(ai, aiMove.getName());
+        view.queueDamageMessage(aiDmg, aiMove.getName());
+        view.updateHPBars();
+
+        if (player.isFainted()) {
+            view.queuePokemonFaintedMessage(player);
+            if (playerTeam.switchToNextActivePokemon()) {
+                Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
+                view.updateUI(nextPlayerPokemon, ai);
+                view.queuePokemonPraiseMessage(player);
+                view.queuePokemonEnterMessage(nextPlayerPokemon);
+                view.startMessageQueue(() -> view.enableMoveButtons());
+            } else {
+                view.queueLoseMessage();
+                view.startMessageQueue(() -> view.disableAllButtons());
+            }
+        } else {
+            view.startMessageQueue(() -> view.enableMoveButtons());
         }
     }
     
