@@ -113,51 +113,79 @@ public class MessageView extends JPanel {
         isWaiting = false;
     }
     
-    // Message liên quan đến chiêu thức tấn công
-    public void showAttackMessage(Pokemon attacker, String moveName, int damage) {
-        setMessage(attacker.getName() + " used " + moveName + "! It dealt " + damage + " damage!");
+    // Bắt đầu trận đấu - Player chọn pokemon
+    public void showPlayerPokemonSelected(Pokemon pokemon) {
+        setMessage("Player đã chọn " + pokemon.getName());
     }
     
-    // Message khi pokemon bị hạ gục và đối thủ có pokemon khác
-    public void showPokemonFaintedWithReplacement(Pokemon faintedPokemon, Pokemon nextPokemon, boolean isOpponent) {
-        if (isOpponent) {
-            setMessage(faintedPokemon.getName() + " fainted! Opponent sends out " + nextPokemon.getName() + "!");
-        } else {
-            setMessage(faintedPokemon.getName() + " fainted! Go " + nextPokemon.getName() + "!");
-        }
+    // Bắt đầu trận đấu - AI chọn pokemon
+    public void showAIPokemonSelected(Pokemon pokemon) {
+        setMessage("AI đã chọn " + pokemon.getName());
     }
     
-    // Message khi pokemon bị hạ gục và không còn pokemon khác
-    public void showGameOverMessage(Pokemon faintedPokemon, boolean playerWon) {
-        if (playerWon) {
-            setMessage(faintedPokemon.getName() + " fainted! You win!");
-        } else {
-            setMessage(faintedPokemon.getName() + " fainted! You lost...");
-        }
+    // Khi sẵn sàng chiến đấu
+    public void showPokemonEnter(Pokemon pokemon) {
+        setMessage("Tiến lên! " + pokemon.getName());
     }
     
-    // Message khi đổi pokemon
-    public void showSwitchPokemonMessage(Pokemon newPokemon) {
-        setMessage("Go " + newPokemon.getName() + "!");
+    // Chờ hành động từ người chơi
+    public void showWaitingForAction(Pokemon playerPokemon) {
+        setMessage(playerPokemon.getName() + " sẽ làm gì?");
+    }
+    
+    // Tấn công - sử dụng tuyệt chiêu
+    public void showUsingMove(Pokemon attacker, String moveName) {
+        setMessage(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+    }
+    
+    // Gây sát thương
+    public void showDamageDealt(int damage) {
+        setMessage("Đã gây " + damage + " sát thương!");
+    }
+    
+    // Pokemon bị hạ gục
+    public void showPokemonFainted(Pokemon pokemon) {
+        setMessage(pokemon.getName() + " đã bị hạ gục!");
+    }
+    
+    // Đổi Pokemon
+    public void showPokemonSwitched(Pokemon pokemon, boolean isPlayerSide) {
+        String side = isPlayerSide ? "Player" : "AI";
+        setMessage(side + " đã lựa chọn " + pokemon.getName());
+    }
+    
+    // Đánh giá pokemon cũ khi đổi pokemon
+    public void showPokemonPraise(Pokemon oldPokemon) {
+        setMessage("Làm tốt lắm! " + oldPokemon.getName());
+    }
+    
+    // Đổi pokemon mới
+    public void showNewPokemonEnter(Pokemon newPokemon) {
+        setMessage("Tiến lên! " + newPokemon.getName());
     }
     
     // Message lỗi khi không thể đổi pokemon
     public void showCannotSwitchMessage() {
-        setMessage("Can't switch to that Pokémon!");
+        setMessage("Không thể đổi Pokémon này!");
     }
     
     // Message cho nút BAG
     public void showNoBagItemsMessage() {
-        setMessage("You have no items!");
+        setMessage("Bạn không có vật phẩm nào!");
     }
     
     // Message cho nút RUN
     public void showCannotRunMessage() {
-        setMessage("Can't run from a trainer battle!");
+        setMessage("Không thể bỏ cuộc trước một huấn luyện viên!");
     }
     
-    // Message khởi đầu trận đấu
-    public void showStartBattleMessage(Pokemon playerPokemon) {
-        setMessage("What will " + playerPokemon.getName() + " do?");
+    // Message Win
+    public void showWinMessage() {
+        setMessage("Bạn đã chiến thắng!");
+    }
+    
+    // Message Lose
+    public void showLoseMessage() {
+        setMessage("Bạn đã thua...");
     }
 }

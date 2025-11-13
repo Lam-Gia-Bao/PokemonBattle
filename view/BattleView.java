@@ -38,7 +38,7 @@ public class BattleView extends JFrame {
 
         aiBar = new HealthBarView(currentAi, false);
         playerBar = new HealthBarView(currentPlayer, true);
-        message = new MessageView("What will " + currentPlayer.getName() + " do?");
+        message = new MessageView("");
         command = new CommandView(controller, currentPlayer, playerTeam, message);
 
         loadImg.add(aiBar);
@@ -47,6 +47,20 @@ public class BattleView extends JFrame {
         loadImg.add(command);
 
         add(loadImg);
+        
+        // Hiển thị message lần lượt khi bắt đầu trận
+        showStartBattleMessages(currentPlayer, currentAi);
+    }
+    
+    private void showStartBattleMessages(Pokemon playerPokemon, Pokemon aiPokemon) {
+        addMessageToQueue("Player đã chọn " + playerPokemon.getName());
+        addMessageToQueue("AI đã chọn " + aiPokemon.getName());
+        addMessageToQueue("Tiến lên! " + playerPokemon.getName());
+        addMessageToQueue(playerPokemon.getName() + " sẽ làm gì?");
+        startMessageQueue(() -> {
+            // Sau khi hết message khởi đầu, cho phép người chơi chơi
+            command.enablePlayerInteraction();
+        });
     }
 
     public void updateHPBars() {
@@ -77,22 +91,6 @@ public class BattleView extends JFrame {
     }
     
     // Delegate methods từ MessageView
-    public void showAttackMessage(Pokemon attacker, String moveName, int damage) {
-        message.showAttackMessage(attacker, moveName, damage);
-    }
-    
-    public void showPokemonFaintedWithReplacement(Pokemon faintedPokemon, Pokemon nextPokemon, boolean isOpponent) {
-        message.showPokemonFaintedWithReplacement(faintedPokemon, nextPokemon, isOpponent);
-    }
-    
-    public void showGameOverMessage(Pokemon faintedPokemon, boolean playerWon) {
-        message.showGameOverMessage(faintedPokemon, playerWon);
-    }
-    
-    public void showSwitchPokemonMessage(Pokemon newPokemon) {
-        message.showSwitchPokemonMessage(newPokemon);
-    }
-    
     public void showCannotSwitchMessage() {
         message.showCannotSwitchMessage();
     }

@@ -30,20 +30,22 @@ public class BattleController {
         
         Move move = player.getMoves().get(index);
         int dmg = player.attack(ai, move);
-        view.addMessageToQueue(player.getName() + " used " + move.getName() + "! It dealt " + dmg + " damage!");
+        view.addMessageToQueue(player.getName() + " đã sử dụng tuyệt chiêu " + move.getName());
+        view.addMessageToQueue("Đã gây " + dmg + " sát thương!");
         view.updateHPBars();
 
         if (ai.isFainted()) {
+            view.addMessageToQueue(ai.getName() + " đã bị hạ gục!");
             // Kiểm tra xem AI có pokemon khác không
             if (aiTeam.switchToNextActivePokemon()) {
                 Pokemon nextAiPokemon = aiTeam.getCurrentPokemon();
                 view.updateUI(playerTeam.getCurrentPokemon(), nextAiPokemon);
-                view.addMessageToQueue(ai.getName() + " fainted! Opponent sends out " + nextAiPokemon.getName() + "!");
+                view.addMessageToQueue("AI đã chọn " + nextAiPokemon.getName());
                 view.startMessageQueue(() -> {
                     view.enableMoveButtons();
                 });
             } else {
-                view.addMessageToQueue(ai.getName() + " fainted! You win!");
+                view.addMessageToQueue("Bạn đã chiến thắng!");
                 view.startMessageQueue(() -> {
                     view.disableAllButtons();
                 });
@@ -54,20 +56,23 @@ public class BattleController {
         // AI phản công
         Move aiMove = AI.chooseBestMove(ai, player);
         int aiDmg = ai.attack(player, aiMove);
-        view.addMessageToQueue(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
+        view.addMessageToQueue(ai.getName() + " đã sử dụng tuyệt chiêu " + aiMove.getName());
+        view.addMessageToQueue("Đã gây " + aiDmg + " sát thương!");
         view.updateHPBars();
 
         if (player.isFainted()) {
+            view.addMessageToQueue(player.getName() + " đã bị hạ gục!");
             // Kiểm tra xem player có pokemon khác không
             if (playerTeam.switchToNextActivePokemon()) {
                 Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
                 view.updateUI(nextPlayerPokemon, ai);
-                view.addMessageToQueue(player.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
+                view.addMessageToQueue("Làm tốt lắm! " + player.getName());
+                view.addMessageToQueue("Tiến lên! " + nextPlayerPokemon.getName());
                 view.startMessageQueue(() -> {
                     view.enableMoveButtons();
                 });
             } else {
-                view.addMessageToQueue(player.getName() + " fainted! You lost...");
+                view.addMessageToQueue("Bạn đã thua...");
                 view.startMessageQueue(() -> {
                     view.disableAllButtons();
                 });
@@ -84,25 +89,29 @@ public class BattleController {
             Pokemon nextPokemon = playerTeam.getCurrentPokemon();
             Pokemon ai = aiTeam.getCurrentPokemon();
             view.updateUI(nextPokemon, ai);
-            view.addMessageToQueue("Go " + nextPokemon.getName() + "!");
+            view.addMessageToQueue("Player đã lựa chọn " + nextPokemon.getName());
+            view.addMessageToQueue("Tiến lên! " + nextPokemon.getName());
             view.updateHPBars();
             
             // AI tấn công
             Move aiMove = AI.chooseBestMove(ai, nextPokemon);
             int aiDmg = ai.attack(nextPokemon, aiMove);
-            view.addMessageToQueue(ai.getName() + " used " + aiMove.getName() + "! It dealt " + aiDmg + " damage!");
+            view.addMessageToQueue(ai.getName() + " đã sử dụng tuyệt chiêu " + aiMove.getName());
+            view.addMessageToQueue("Đã gây " + aiDmg + " sát thương!");
             view.updateHPBars();
             
             if (nextPokemon.isFainted()) {
+                view.addMessageToQueue(nextPokemon.getName() + " đã bị hạ gục!");
                 if (playerTeam.switchToNextActivePokemon()) {
                     Pokemon nextPlayerPokemon = playerTeam.getCurrentPokemon();
                     view.updateUI(nextPlayerPokemon, ai);
-                    view.addMessageToQueue(nextPokemon.getName() + " fainted! Go " + nextPlayerPokemon.getName() + "!");
+                    view.addMessageToQueue("Làm tốt lắm! " + nextPokemon.getName());
+                    view.addMessageToQueue("Tiến lên! " + nextPlayerPokemon.getName());
                     view.startMessageQueue(() -> {
                         view.enableMoveButtons();
                     });
                 } else {
-                    view.addMessageToQueue(nextPokemon.getName() + " fainted! You lost...");
+                    view.addMessageToQueue("Bạn đã thua...");
                     view.startMessageQueue(() -> {
                         view.disableAllButtons();
                     });
