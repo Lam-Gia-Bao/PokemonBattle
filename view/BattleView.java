@@ -117,6 +117,43 @@ public class BattleView extends JFrame {
     public void clearMessageQueue() {
         message.clearQueue();
     }
+    
+    // Methods để queue message từ MessageView
+    public void queueUsingMoveMessage(Pokemon attacker, String moveName) {
+        addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+    }
+    
+    public void queueDamageMessage(int damage) {
+        addMessageToQueue("Đã gây " + damage + " sát thương!");
+    }
+    
+    public void queuePokemonFaintedMessage(Pokemon pokemon) {
+        addMessageToQueue(pokemon.getName() + " đã bị hạ gục!");
+    }
+    
+    public void queueAIPokemonSelectedMessage(Pokemon pokemon) {
+        addMessageToQueue("AI đã chọn " + pokemon.getName());
+    }
+    
+    public void queuePlayerPokemonSelectedMessage(Pokemon pokemon) {
+        addMessageToQueue("Player đã lựa chọn " + pokemon.getName());
+    }
+    
+    public void queuePokemonEnterMessage(Pokemon pokemon) {
+        addMessageToQueue("Tiến lên! " + pokemon.getName());
+    }
+    
+    public void queuePokemonPraiseMessage(Pokemon pokemon) {
+        addMessageToQueue("Làm tốt lắm! " + pokemon.getName());
+    }
+    
+    public void queueWinMessage() {
+        addMessageToQueue("Bạn đã chiến thắng!");
+    }
+    
+    public void queueLoseMessage() {
+        addMessageToQueue("Bạn đã thua...");
+    }
 
     public BattleController getController() {
         return controller;
