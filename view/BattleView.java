@@ -1,8 +1,6 @@
 package view;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.function.Consumer;
 
 import model.Pokemon;
 import controller.BattleController;
@@ -31,6 +29,7 @@ public class BattleView extends JFrame {
         setResizable(false);
         
         loadImg = new LoadImgView();
+        loadImg.loadPokemonImages(player, ai);
         loadImg.setLayout(null);
 
         aiBar = new HealthBarView(ai, false);
