@@ -14,9 +14,11 @@ public class CommandView extends JPanel {
     private JPanel pokemonPanel;
     private JButton[] pokemonButtons;
     private BattleController controller;
+    private MessageView message;
 
     public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, MessageView message) {
         this.controller = controller;
+        this.message = message;
         setLayout(null);
         setOpaque(false);
         setBounds(820, 470, 440, 180);
