@@ -7,9 +7,9 @@ import model.PokemonTeam;
 import controller.BattleController;
 
 public class BattleView extends JFrame {
-    private BattleController controller;
-    private PokemonTeam playerTeam;
-    private PokemonTeam aiTeam;
+    private final BattleController controller;
+    private final PokemonTeam playerTeam;
+    private final PokemonTeam aiTeam;
     private LoadImgView loadImg;
     private HealthBarView playerBar;
     private HealthBarView aiBar;
@@ -123,8 +123,8 @@ public class BattleView extends JFrame {
         addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
     }
     
-    public void queueDamageMessage(int damage) {
-        addMessageToQueue("Đã gây " + damage + " sát thương!");
+    public void queueDamageMessage(int damage, String moveName) {
+        addMessageToQueue(moveName + " đã gây " + damage + " sát thương!");
     }
     
     public void queuePokemonFaintedMessage(Pokemon pokemon) {

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pokemon {
-	private String name;
-	private PokemonType type;
+	private final String name;
+	private final PokemonType type;
 	private int hp;
-	private int maxHp;
-	private int atk;
-	private int def;
-	private int speed;
-	private List<Move> moves;
+	private final int maxHp;
+	private final int atk;
+	private final int def;
+	private final int speed;
+	private final List<Move> moves;
 	
 	public Pokemon(String name, PokemonType type, int atk, int def, int speed, int hp) {
 		this.name = name;

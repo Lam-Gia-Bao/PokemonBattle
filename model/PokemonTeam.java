@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PokemonTeam {
-    private List<Pokemon> team;
+    private final List<Pokemon> team;
     private int currentIndex;
     
     public PokemonTeam() {

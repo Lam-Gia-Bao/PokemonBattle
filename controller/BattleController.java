@@ -4,9 +4,9 @@ import model.*;
 import view.BattleView;
 
 public class BattleController {
-    private PokemonTeam playerTeam;
-    private PokemonTeam aiTeam;
-    private BattleView view;
+    private final PokemonTeam playerTeam;
+    private final PokemonTeam aiTeam;
+    private final BattleView view;
 
     public BattleController(PokemonTeam playerTeam, PokemonTeam aiTeam) {
         this.playerTeam = playerTeam;
@@ -32,7 +32,7 @@ public class BattleController {
         Move move = player.getMoves().get(index);
         int dmg = player.attack(ai, move);
         view.queueUsingMoveMessage(player, move.getName());
-        view.queueDamageMessage(dmg);
+        view.queueDamageMessage(dmg, move.getName());
         view.updateHPBars();
 
         if (ai.isFainted()) {
@@ -53,12 +53,16 @@ public class BattleController {
             }
             return;
         }
+    }
 
+    public void aiMove() {
+        Pokemon player = playerTeam.getCurrentPokemon();
+        Pokemon ai = aiTeam.getCurrentPokemon();
         // AI phản công
         Move aiMove = AI.chooseBestMove(ai, player);
         int aiDmg = ai.attack(player, aiMove);
         view.queueUsingMoveMessage(ai, aiMove.getName());
-        view.queueDamageMessage(aiDmg);
+        view.queueDamageMessage(aiDmg, aiMove.getName());
         view.updateHPBars();
 
         if (player.isFainted()) {
@@ -98,7 +102,7 @@ public class BattleController {
             Move aiMove = AI.chooseBestMove(ai, nextPokemon);
             int aiDmg = ai.attack(nextPokemon, aiMove);
             view.queueUsingMoveMessage(ai, aiMove.getName());
-            view.queueDamageMessage(aiDmg);
+            view.queueDamageMessage(aiDmg, aiMove.getName());
             view.updateHPBars();
             
             if (nextPokemon.isFainted()) {

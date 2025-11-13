@@ -1,9 +1,9 @@
 package model;
 
 public class Move {
-	private String name;
-	private PokemonType type;
-	private int power;
+	private final String name;
+	private final PokemonType type;
+	private final int power;
 	private int pp;
 	
 	public Move(String name, PokemonType type, int power, int pp) {
