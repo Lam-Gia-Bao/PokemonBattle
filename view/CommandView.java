@@ -122,7 +122,7 @@ public class CommandView extends JPanel {
         runBtn.setEnabled(enable);
     }
 
-    // Enable full interaction for player's turn (main buttons + move buttons + pokemon buttons)
+    // Cho phép người chơi tương tác khi hết message và đến lượt chơi
     public void enablePlayerInteraction() {
         enableMainButtons(true);
         if (moveButtons != null) {

@@ -115,17 +115,17 @@ public class MessageView extends JPanel {
     
     // Bắt đầu trận đấu - Player chọn pokemon
     public void showPlayerPokemonSelected(Pokemon pokemon) {
-        setMessage("Player đã chọn " + pokemon.getName());
+        setMessage("Player đã chọn " + pokemon.getName() + ".");
     }
     
     // Bắt đầu trận đấu - AI chọn pokemon
     public void showAIPokemonSelected(Pokemon pokemon) {
-        setMessage("AI đã chọn " + pokemon.getName());
+        setMessage("AI đã chọn " + pokemon.getName() + ".");
     }
     
     // Khi sẵn sàng chiến đấu
     public void showPokemonEnter(Pokemon pokemon) {
-        setMessage("Tiến lên! " + pokemon.getName());
+        setMessage("Tiến lên! " + pokemon.getName() + "!");
     }
     
     // Chờ hành động từ người chơi
@@ -135,7 +135,7 @@ public class MessageView extends JPanel {
     
     // Tấn công - sử dụng tuyệt chiêu
     public void showUsingMove(Pokemon attacker, String moveName) {
-        setMessage(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+        setMessage(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName + ".");
     }
     
     // Gây sát thương
@@ -151,17 +151,17 @@ public class MessageView extends JPanel {
     // Đổi Pokemon
     public void showPokemonSwitched(Pokemon pokemon, boolean isPlayerSide) {
         String side = isPlayerSide ? "Player" : "AI";
-        setMessage(side + " đã lựa chọn " + pokemon.getName());
+        setMessage(side + " đã lựa chọn " + pokemon.getName() + ".");
     }
     
     // Đánh giá pokemon cũ khi đổi pokemon
     public void showPokemonPraise(Pokemon oldPokemon) {
-        setMessage("Làm tốt lắm! " + oldPokemon.getName());
+        setMessage("Làm tốt lắm! " + oldPokemon.getName() + "!");
     }
     
     // Đổi pokemon mới
     public void showNewPokemonEnter(Pokemon newPokemon) {
-        setMessage("Tiến lên! " + newPokemon.getName());
+        setMessage("Tiến lên! " + newPokemon.getName() + "!");
     }
     
     // Message lỗi khi không thể đổi pokemon
@@ -191,7 +191,7 @@ public class MessageView extends JPanel {
     
     // Hàng đợi message cho tấn công
     public void queueUsingMoveMessage(Pokemon attacker, String moveName) {
-        addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName);
+        addMessageToQueue(attacker.getName() + " đã sử dụng tuyệt chiêu " + moveName  + ".");
     }
     
     public void queueDamageMessage(int damage, String moveName) {
@@ -203,19 +203,19 @@ public class MessageView extends JPanel {
     }
     
     public void queueAIPokemonSelectedMessage(Pokemon pokemon) {
-        addMessageToQueue("AI đã chọn " + pokemon.getName());
+        addMessageToQueue("AI đã chọn " + pokemon.getName() + ".");
     }
     
     public void queuePlayerPokemonSelectedMessage(Pokemon pokemon) {
-        addMessageToQueue("Player đã lựa chọn " + pokemon.getName());
+        addMessageToQueue("Player đã lựa chọn " + pokemon.getName() + ".");
     }
     
     public void queuePokemonEnterMessage(Pokemon pokemon) {
-        addMessageToQueue("Tiến lên! " + pokemon.getName());
+        addMessageToQueue("Tiến lên! " + pokemon.getName() + "!");
     }
     
     public void queuePokemonPraiseMessage(Pokemon pokemon) {
-        addMessageToQueue("Làm tốt lắm! " + pokemon.getName());
+        addMessageToQueue("Làm tốt lắm! " + pokemon.getName() + "!");
     }
     
     public void queueWinMessage() {
