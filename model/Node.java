@@ -64,7 +64,6 @@ public class Node {
             if (!move.isUsable()) continue;
             
             Node childState = new Node(aiPokemon, playerPokemon, move);
-            // Simulate attack
             childState.simulateAttack(attacker, defender, move);
             children.add(childState);
         }
