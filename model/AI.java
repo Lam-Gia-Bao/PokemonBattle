@@ -1,7 +1,7 @@
 package model;
 
 public class AI {
-	private static final int MAX_DEPTH = 3; // Giới hạn độ sâu tìm kiếm
+	private static final int MAX_DEPTH = 3; // Giới hạn độ sâu tìm kiếm, AI sẽ dự đoán truớc 3 lượt
 	
 	public static Move chooseBestMove(Pokemon ai, Pokemon player) {
 		Node root = new Node(ai, player, null);
@@ -9,7 +9,7 @@ public class AI {
 		int bestValue = Integer.MIN_VALUE;
 		Move bestMove = null;
 		
-		// Tạo các state con (các move có thể của AI)
+		// Tạo các state con là các move có thể của AI
 		root.generateChildren(true);
 		
 		for (Node child : root.getChildren()) {

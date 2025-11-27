@@ -26,7 +26,7 @@ public class Node {
             original.getSpeed(),
             original.getMaxHp()
         );
-        // Đặt HP hiện tại
+        // Lấy HP hiện tại khi copy
         int hpLoss = original.getMaxHp() - original.getHp();
         for (int i = 0; i < hpLoss; i++) {
             copy.receiveDmg(1);
@@ -70,6 +70,7 @@ public class Node {
         }
     }
     
+    // Mô phỏng tấn công trong state con
     private void simulateAttack(Pokemon attacker, Pokemon defender, Move move) {
         Pokemon attackerCopy = isAiPokemon(attacker) ? aiPokemon : playerPokemon;
         Pokemon defenderCopy = isAiPokemon(defender) ? aiPokemon : playerPokemon;
@@ -80,7 +81,7 @@ public class Node {
         return ai == aiPokemon;
     }
     
-    // Hàm đánh giá (heuristic)
+    // Hàm đánh giá 
     public int point() {
         if (playerPokemon.isFainted()) return 10000; // AI thắng
         if (aiPokemon.isFainted()) return -10000; // Player thắng

@@ -8,6 +8,7 @@ import model.Pokemon;
 
 public class MessageView extends JPanel {
     private JTextArea messageBox;
+    private JPanel dialogPanel;
     private JLabel clickToContinueLabel;
     private Queue<String> messageQueue;
     private Runnable onQueueComplete;
@@ -18,25 +19,66 @@ public class MessageView extends JPanel {
         setOpaque(false);
         setBounds(50, 600, 1180, 80);
 
+        // Background panel vẽ hộp thoại theo style retro
+        dialogPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g.create();
+                int w = getWidth();
+                int h = getHeight();
+
+                // Tầng viền ngoài (đậm)
+                g2.setColor(new Color(30, 30, 30));
+                g2.fillRoundRect(0, 0, w - 1, h - 1, 12, 12);
+
+                // Viền vàng cam
+                g2.setColor(new Color(240, 176, 48));
+                g2.fillRoundRect(4, 4, w - 8, h - 8, 10, 10);
+
+                // Một lớp viền tối nhỏ bên trong để tạo độ sâu
+                g2.setColor(new Color(70, 70, 70));
+                g2.drawRoundRect(6, 6, w - 12, h - 12, 10, 10);
+
+                // Nền xám nhạt bên trong
+                g2.setColor(new Color(232, 232, 232));
+                g2.fillRoundRect(8, 8, w - 16, h - 16, 8, 8);
+
+                // Khung trong màu xám để giống UI classic
+                g2.setColor(new Color(140, 140, 140));
+                g2.drawRoundRect(10, 10, w - 20, h - 20, 8, 8);
+
+                g2.dispose();
+            }
+        };
+        dialogPanel.setOpaque(false);
+        dialogPanel.setLayout(null);
+        dialogPanel.setBounds(0, 0, 1180, 80);
+
         messageBox = new JTextArea(initialMessage);
         messageBox.setEditable(false);
-        messageBox.setBackground(new Color(255, 255, 255, 230));
+        messageBox.setOpaque(false); // để thấy nền vẽ bên dưới
+        messageBox.setForeground(new Color(10, 10, 10));
         messageBox.setFont(new Font("Monospaced", Font.BOLD, 22));
         messageBox.setLineWrap(true);
         messageBox.setWrapStyleWord(true);
-        messageBox.setBounds(0, 0, 1180, 80);
+        // Padding bên trong để chữ không dính viền
+        messageBox.setBounds(20, 14, 1180 - 40, 80 - 28);
 
-        clickToContinueLabel = new JLabel("[Click to continue...]");
-        clickToContinueLabel.setFont(new Font("Monospaced", Font.ITALIC, 14));
-        clickToContinueLabel.setForeground(Color.GRAY);
-        clickToContinueLabel.setBounds(1000, 50, 200, 20);
+        clickToContinueLabel = new JLabel("Nhấn để tiếp tục..");
+        clickToContinueLabel.setFont(new Font("Monospaced", Font.PLAIN, 13));
+        clickToContinueLabel.setForeground(new Color(90, 90, 90));
+        // Đặt trong vùng nội dung (viền trong cách 10px): bottom-right
+        clickToContinueLabel.setBounds(1180 - 20 - 150, 80 - 18 - 12, 150, 18);
         clickToContinueLabel.setVisible(false);
 
         messageQueue = new LinkedList<>();
         isWaiting = false;
 
-        add(messageBox);
-        add(clickToContinueLabel);
+        // Thứ tự: panel nền trước, messageBox nằm bên trong panel, sau đó là label
+        add(dialogPanel);
+        dialogPanel.add(messageBox);
+        dialogPanel.add(clickToContinueLabel);
 
         // Click để hiện message tiếp theo - trên JPanel
         addMouseListener(new java.awt.event.MouseAdapter() {
@@ -139,8 +181,8 @@ public class MessageView extends JPanel {
     }
     
     // Gây sát thương
-    public void showDamageDealt(int damage) {
-        setMessage("Đã gây " + damage + " sát thương!");
+    public void showDamageDealt(Pokemon attacker, int damage) {
+        setMessage(attacker.getName() + " đã gây " + damage + " sát thương!");
     }
     
     // Pokemon bị hạ gục
