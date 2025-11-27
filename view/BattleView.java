@@ -43,8 +43,8 @@ public class BattleView extends JFrame {
 
         loadImg.add(aiBar);
         loadImg.add(playerBar);
-        loadImg.add(message);
         loadImg.add(command);
+        loadImg.add(message);
 
         add(loadImg);
         

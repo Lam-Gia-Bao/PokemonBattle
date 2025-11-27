@@ -22,7 +22,7 @@ public class CommandView extends JPanel {
         this.message = messageView;
         setLayout(null);
         setOpaque(false);
-        setBounds(820, 470, 420, 160);
+        setBounds(820, 445, 410, 160);
 
         int btnW = 180, btnH = 50;
         fightBtn = createButton("FIGHT", 15, 15, btnW, btnH);
@@ -45,7 +45,7 @@ public class CommandView extends JPanel {
         for (int i = 0; i < moveButtons.length; i++) {
             final int idx = i;
             Move move = player.getMoves().get(i);
-            moveButtons[i] = new JButton(move.getName());
+            moveButtons[i] = new PixelCommandButton(move.getName(), PixelCommandButton.Theme.GRAY);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
             moveButtons[i].addActionListener(e -> {
                 showMovePanel(false);
@@ -68,7 +68,7 @@ public class CommandView extends JPanel {
             final int idx = i;
             Pokemon poke = playerTeam.getTeam().get(i);
             String status = poke.isFainted() ? " (FAINTED)" : "";
-            pokemonButtons[i] = new JButton(poke.getName() + status);
+            pokemonButtons[i] = new PixelCommandButton(poke.getName() + status, PixelCommandButton.Theme.GRAY);
             pokemonButtons[i].setFont(new Font("Arial", Font.BOLD, 16));
             pokemonButtons[i].setEnabled(!poke.isFainted() && idx != playerTeam.getCurrentIndex());
             
@@ -178,7 +178,7 @@ public class CommandView extends JPanel {
         for (int i = 0; i < moveButtons.length; i++) {
             final int idx = i;
             Move move = pokemon.getMoves().get(i);
-            moveButtons[i] = new JButton(move.getName());
+            moveButtons[i] = new PixelCommandButton(move.getName(), PixelCommandButton.Theme.GRAY);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
             moveButtons[i].addActionListener(e -> {
                 showMovePanel(false);

@@ -181,8 +181,8 @@ public class MessageView extends JPanel {
     }
     
     // Gây sát thương
-    public void showDamageDealt(Pokemon attacker, int damage) {
-        setMessage(attacker.getName() + " đã gây " + damage + " sát thương!");
+    public void showDamageDealt(Pokemon pokemon, int damage) {
+        setMessage(pokemon.getName() + " đã gây " + damage + " sát thương!");
     }
     
     // Pokemon bị hạ gục
