@@ -15,6 +15,7 @@ public class BattleView extends JFrame {
     private HealthBarView aiBar;
     private MessageView message;
     private CommandView command;
+    private AIMoveView aiMoveView;
 
     public BattleView(BattleController controller, PokemonTeam playerTeam, PokemonTeam aiTeam) {
         this.controller = controller;
@@ -40,11 +41,13 @@ public class BattleView extends JFrame {
         playerBar = new HealthBarView(currentPlayer, true);
         message = new MessageView("");
         command = new CommandView(controller, currentPlayer, playerTeam, message);
+        aiMoveView = new AIMoveView(currentAi);
 
         loadImg.add(aiBar);
         loadImg.add(playerBar);
         loadImg.add(command);
         loadImg.add(message);
+        loadImg.add(aiMoveView);
 
         add(loadImg);
         
@@ -82,6 +85,7 @@ public class BattleView extends JFrame {
     public void updateUI(Pokemon newPlayer, Pokemon newAi) {
         playerBar.setPokemon(newPlayer);
         aiBar.setPokemon(newAi);
+        aiMoveView.setPokemon(newAi);
         loadImg.loadPokemonImages(newPlayer, newAi);
         loadImg.repaint();
         command.updateMovePanel(newPlayer);
@@ -90,6 +94,12 @@ public class BattleView extends JFrame {
     
     public void enableMoveButtons() {
         command.enablePlayerInteraction();
+    }
+
+    public void updateAIMoveDisplay() {
+        if (aiMoveView != null) {
+            aiMoveView.updateMoves();
+        }
     }
     
     //Gọi các thoại từ MessageView

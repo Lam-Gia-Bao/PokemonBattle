@@ -132,7 +132,7 @@ public class CommandView extends JPanel {
         
         movePanel.setVisible(show);
         if (show && moveButtons != null) {
-            // ensure move buttons are enabled when showing the panel
+            // Kích hoạt tất cả các nút chiêu thức
             for (JButton b : moveButtons) {
                 if (b != null)
                     b.setEnabled(true);
@@ -262,7 +262,7 @@ public class CommandView extends JPanel {
         }
     }
 
-    // Custom retro-styled button
+    // Nút kiểu pixelated
     static class PixelCommandButton extends JButton {
         enum Theme {
             PINK(new Color[]{new Color(255, 220, 230), new Color(255, 170, 190), new Color(240, 140, 165), new Color(255, 205, 215)}, new Color(250, 250, 250)),
@@ -339,7 +339,7 @@ public class CommandView extends JPanel {
             int h = getHeight();
             int arc = Math.min(h, 50);
 
-            // Outer bezel
+            // Nền và viền
             g2.setColor(new Color(60, 60, 60));
             g2.fillRoundRect(0, 0, w, h, arc, arc);
             g2.setColor(Color.WHITE);

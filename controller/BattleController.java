@@ -36,6 +36,7 @@ public class BattleController {
         view.queueUsingMoveMessage(player, move.getName());
         view.queueDamageMessage(dmg, move.getName());
         view.updateHPBars();
+        view.updateAIMoveDisplay();
 
         if (ai.isFainted()) {
             view.queuePokemonFaintedMessage(ai);
@@ -88,6 +89,7 @@ public class BattleController {
         view.queueUsingMoveMessage(ai, aiMove.getName());
         view.queueDamageMessage(aiDmg, aiMove.getName());
         view.updateHPBars();
+        view.updateAIMoveDisplay();
 
         if (player.isFainted()) {
             view.queuePokemonFaintedMessage(player);
