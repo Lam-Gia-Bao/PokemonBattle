@@ -17,7 +17,7 @@ public class MessageView extends JPanel {
     public MessageView(String initialMessage) {
         setLayout(null);
         setOpaque(false);
-        setBounds(50, 600, 1180, 80);
+        setBounds(50, 600, 770, 80);
 
         // Background panel vẽ hộp thoại theo style retro
         dialogPanel = new JPanel() {
@@ -53,7 +53,7 @@ public class MessageView extends JPanel {
         };
         dialogPanel.setOpaque(false);
         dialogPanel.setLayout(null);
-        dialogPanel.setBounds(0, 0, 1180, 80);
+        dialogPanel.setBounds(0, 0, 770, 80);
 
         messageBox = new JTextArea(initialMessage);
         messageBox.setEditable(false);
@@ -63,13 +63,13 @@ public class MessageView extends JPanel {
         messageBox.setLineWrap(true);
         messageBox.setWrapStyleWord(true);
         // Padding bên trong để chữ không dính viền
-        messageBox.setBounds(20, 14, 1180 - 40, 80 - 28);
+        messageBox.setBounds(20, 14, 770 - 40, 80 - 28);
 
         clickToContinueLabel = new JLabel("Nhấn để tiếp tục..");
         clickToContinueLabel.setFont(new Font("Monospaced", Font.PLAIN, 13));
         clickToContinueLabel.setForeground(new Color(90, 90, 90));
         // Đặt trong vùng nội dung (viền trong cách 10px): bottom-right
-        clickToContinueLabel.setBounds(1180 - 20 - 150, 80 - 18 - 12, 150, 18);
+        clickToContinueLabel.setBounds(770 - 20 - 150, 80 - 18 - 12, 150, 18);
         clickToContinueLabel.setVisible(false);
 
         messageQueue = new LinkedList<>();

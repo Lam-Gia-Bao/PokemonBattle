@@ -22,7 +22,7 @@ public class CommandView extends JPanel {
         this.message = messageView;
         setLayout(null);
         setOpaque(false);
-        setBounds(820, 445, 410, 160);
+        setBounds(820, 520, 410, 160);
 
         int btnW = 180, btnH = 50;
         fightBtn = createButton("FIGHT", 15, 15, btnW, btnH);
