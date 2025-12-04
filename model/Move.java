@@ -5,12 +5,14 @@ public class Move {
     private final String name;
     private final PokemonType type;
     private final int power;
+    private final int maxPp;
     private int pp;
 
     public Move(String name, PokemonType type, int power, int pp) {
         this.name = name;
         this.type = type;
         this.power = power;
+        this.maxPp = pp;
         this.pp = pp;
     }
 
@@ -28,6 +30,10 @@ public class Move {
 
     public int getPp() {
         return pp;
+    }
+
+    public int getMaxPp() {
+        return maxPp;
     }
 
     public void useMove() {

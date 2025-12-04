@@ -133,7 +133,7 @@ public class HealthBarView extends JPanel {
 		g2.drawString(typeName, textX, textY);
 	}
 
-	// Lấy màu theo hệ Pokémon (tương tự ảnh)
+	// Lấy màu theo hệ Pokémon 
 	private Color getTypeColor(PokemonType type) {
 		switch (type) {
 			case NORMAL:
