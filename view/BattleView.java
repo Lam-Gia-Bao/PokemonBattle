@@ -102,6 +102,12 @@ public class BattleView extends JFrame {
         }
     }
     
+    public void updatePlayerMoveDisplay() {
+        if (command != null) {
+            command.updateMoveButtons(playerTeam.getCurrentPokemon());
+        }
+    }
+    
     //Gọi các thoại từ MessageView
     public void showCannotSwitchMessage() {
         message.showCannotSwitchMessage();

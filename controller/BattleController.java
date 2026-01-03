@@ -36,6 +36,7 @@ public class BattleController {
         view.queueUsingMoveMessage(player, move.getName());
         view.queueDamageMessage(dmg, move.getName());
         view.updateHPBars();
+        view.updatePlayerMoveDisplay();
         view.updateAIMoveDisplay();
 
         if (ai.isFainted()) {
@@ -89,6 +90,8 @@ public class BattleController {
         view.queueUsingMoveMessage(ai, aiMove.getName());
         view.queueDamageMessage(aiDmg, aiMove.getName());
         view.updateHPBars();
+        // Cập nhật PP của moves sau khi tấn công
+        view.updatePlayerMoveDisplay();
         view.updateAIMoveDisplay();
 
         if (player.isFainted()) {
