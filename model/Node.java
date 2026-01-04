@@ -31,9 +31,13 @@ public class Node {
         for (int i = 0; i < hpLoss; i++) {
             copy.receiveDmg(1);
         }
-        // Copy moves
+        // Copy moves (bao gồm cả healing moves)
         for (Move m : original.getMoves()) {
-            copy.addMove(new Move(m.getName(), m.getType(), m.getPower(), m.getPp()));
+            if (m.isHealingMove()) {
+                copy.addMove(new Move(m.getName(), m.getType(), m.getPower(), m.getPp(), true, m.getHealAmount()));
+            } else {
+                copy.addMove(new Move(m.getName(), m.getType(), m.getPower(), m.getPp()));
+            }
         }
         return copy;
     }

@@ -85,12 +85,26 @@ public class Pokemon {
         if (this.hp < 0) this.hp = 0;
     }
 
+    public void heal(int amount) {
+        this.hp += amount;
+        if (this.hp > this.maxHp) this.hp = this.maxHp;
+    }
+
     
     public int attack(Pokemon target, Move move) {
         if (this.isFainted()) return 0;
         if (move == null || !move.isUsable()) return 0;
 
         move.useMove();
+        
+        // Nếu là skill hồi máu, hồi cho bản thân
+        if (move.isHealingMove()) {
+            int healAmount = move.getHealAmount();
+            this.heal(healAmount);
+            return healAmount; // Trả về số máu đã hồi
+        }
+        
+        // Nếu là skill tấn công
         int damage = move.calculateDamage(this, target);
         target.receiveDmg(damage);
         return damage;

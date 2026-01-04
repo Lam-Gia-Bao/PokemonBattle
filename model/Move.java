@@ -7,13 +7,21 @@ public class Move {
     private final int power;
     private final int maxPp;
     private int pp;
+    private final boolean isHealingMove;
+    private final int healAmount; // Số máu hồi (0 nếu không phải skill hồi)
 
     public Move(String name, PokemonType type, int power, int pp) {
+        this(name, type, power, pp, false, 0);
+    }
+
+    public Move(String name, PokemonType type, int power, int pp, boolean isHealingMove, int healAmount) {
         this.name = name;
         this.type = type;
         this.power = power;
         this.maxPp = pp;
         this.pp = pp;
+        this.isHealingMove = isHealingMove;
+        this.healAmount = healAmount;
     }
 
     public String getName() {
@@ -42,6 +50,14 @@ public class Move {
 
     public boolean isUsable() {
         return pp > 0;
+    }
+
+    public boolean isHealingMove() {
+        return isHealingMove;
+    }
+
+    public int getHealAmount() {
+        return healAmount;
     }
 
     /**

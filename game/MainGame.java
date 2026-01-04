@@ -9,7 +9,7 @@ public class MainGame {
         PokemonTeam playerTeam = new PokemonTeam();
         playerTeam.addPokemon(PokemonData.pokemonGreninja());
         playerTeam.addPokemon(PokemonData.pokemonRayquaza());
-        playerTeam.addPokemon(PokemonData.pokemonPikachu());
+        playerTeam.addPokemon(PokemonData.pokemonScizor());
         playerTeam.addPokemon(PokemonData.pokemonArceus());
         
         // Tạo team cho AI
