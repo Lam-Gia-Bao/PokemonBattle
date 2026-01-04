@@ -71,7 +71,8 @@ public class CommandView extends JPanel {
             final int idx = i;
             Pokemon poke = playerTeam.getTeam().get(i);
             String status = poke.isFainted() ? " (FAINTED)" : "";
-            pokemonButtons[i] = new PixelCommandButton(poke.getName() + status, PixelCommandButton.Theme.GRAY);
+            PixelCommandButton.Theme pokeTheme = getTypeTheme(poke.getType());
+            pokemonButtons[i] = new PixelCommandButton(poke.getName() + status, pokeTheme);
             pokemonButtons[i].setFont(new Font("Arial", Font.BOLD, 16));
             pokemonButtons[i].setEnabled(!poke.isFainted() && idx != playerTeam.getCurrentIndex());
             
@@ -246,41 +247,41 @@ public class CommandView extends JPanel {
     private PixelCommandButton.Theme getTypeTheme(PokemonType type) {
         switch (type) {
             case NORMAL:
-                return PixelCommandButton.Theme.GRAY;
+                return PixelCommandButton.Theme.TYPE_NORMAL;
             case FIRE:
-                return PixelCommandButton.Theme.ORANGE;
+                return PixelCommandButton.Theme.TYPE_FIRE;
             case WATER:
-                return PixelCommandButton.Theme.BLUE;
+                return PixelCommandButton.Theme.TYPE_WATER;
             case GRASS:
-                return PixelCommandButton.Theme.GREEN;
+                return PixelCommandButton.Theme.TYPE_GRASS;
             case ELECTRIC:
-                return PixelCommandButton.Theme.YELLOW;
+                return PixelCommandButton.Theme.TYPE_ELECTRIC;
             case ICE:
-                return PixelCommandButton.Theme.LIGHT_BLUE;
+                return PixelCommandButton.Theme.TYPE_ICE;
             case FIGHTING:
-                return PixelCommandButton.Theme.DARK_RED;
+                return PixelCommandButton.Theme.TYPE_FIGHTING;
             case POISON:
-                return PixelCommandButton.Theme.PURPLE;
+                return PixelCommandButton.Theme.TYPE_POISON;
             case GROUND:
-                return PixelCommandButton.Theme.BROWN;
+                return PixelCommandButton.Theme.TYPE_GROUND;
             case FLYING:
-                return PixelCommandButton.Theme.LIGHT_PURPLE;
+                return PixelCommandButton.Theme.TYPE_FLYING;
             case PSYCHIC:
-                return PixelCommandButton.Theme.PINK;
+                return PixelCommandButton.Theme.TYPE_PSYCHIC;
             case BUG:
-                return PixelCommandButton.Theme.LIGHT_GREEN;
+                return PixelCommandButton.Theme.TYPE_BUG;
             case ROCK:
-                return PixelCommandButton.Theme.DARK_BROWN;
+                return PixelCommandButton.Theme.TYPE_ROCK;
             case GHOST:
-                return PixelCommandButton.Theme.DARK_PURPLE;
+                return PixelCommandButton.Theme.TYPE_GHOST;
             case DRAGON:
-                return PixelCommandButton.Theme.BLUE;
+                return PixelCommandButton.Theme.TYPE_DRAGON;
             case DARK:
-                return PixelCommandButton.Theme.DARK_BROWN;
+                return PixelCommandButton.Theme.TYPE_DARK;
             case STEEL:
-                return PixelCommandButton.Theme.SILVER;
+                return PixelCommandButton.Theme.TYPE_STEEL;
             case FAIRY:
-                return PixelCommandButton.Theme.LIGHT_PURPLE;
+                return PixelCommandButton.Theme.TYPE_FAIRY;
             default:
                 return PixelCommandButton.Theme.GRAY;
         }
