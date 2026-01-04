@@ -18,7 +18,7 @@ public class PixelCommandButton extends JButton {
         LIGHT_GREEN(new Color[]{new Color(200, 220, 80), new Color(170, 190, 50), new Color(150, 170, 30), new Color(185, 205, 60)}, new Color(250, 250, 250)),
         DARK_PURPLE(new Color[]{new Color(160, 130, 200), new Color(120, 80, 160), new Color(100, 60, 140), new Color(140, 100, 180)}, new Color(250, 250, 250)),
         LIGHT_PURPLE(new Color[]{new Color(240, 160, 200), new Color(220, 120, 170), new Color(200, 90, 150), new Color(230, 140, 185)}, new Color(250, 250, 250)),
-        SILVER(new Color[]{new Color(220, 220, 230), new Color(190, 190, 200), new Color(170, 170, 180), new Color(205, 205, 215)}, new Color(50, 50, 50)),
+        SILVER(new Color[]{new Color(220, 220, 230), new Color(190, 190, 200), new Color(170, 170, 180), new Color(205, 205, 215)}, new Color(250, 250, 250)),
         DARK_RED(new Color[]{new Color(200, 60, 50), new Color(170, 40, 30), new Color(150, 20, 10), new Color(185, 50, 40)}, new Color(250, 250, 250)),
         DARK_BROWN(new Color[]{new Color(140, 110, 90), new Color(110, 80, 60), new Color(90, 60, 40), new Color(125, 95, 75)}, new Color(250, 250, 250)),
         GRAY(new Color[]{new Color(190, 190, 190), new Color(160, 160, 160), new Color(140, 140, 140), new Color(175, 175, 175)}, new Color(250, 250, 250)),
@@ -31,7 +31,7 @@ public class PixelCommandButton extends JButton {
         TYPE_ICE(new Color[]{new Color(172, 236, 236), new Color(152, 216, 216), new Color(132, 196, 196), new Color(162, 226, 226)}, new Color(250, 250, 250)),
         TYPE_FIGHTING(new Color[]{new Color(212, 68, 60), new Color(192, 48, 40), new Color(172, 28, 20), new Color(202, 58, 50)}, new Color(250, 250, 250)),
         TYPE_POISON(new Color[]{new Color(180, 84, 180), new Color(160, 64, 160), new Color(140, 44, 140), new Color(170, 74, 170)}, new Color(250, 250, 250)),
-        TYPE_GROUND(new Color[]{new Color(244, 212, 124), new Color(224, 192, 104), new Color(204, 172, 84), new Color(234, 202, 114)}, new Color(50, 50, 50)),
+        TYPE_GROUND(new Color[]{new Color(244, 212, 124), new Color(224, 192, 104), new Color(204, 172, 84), new Color(234, 202, 114)}, new Color(250, 250, 250)),
         TYPE_FLYING(new Color[]{new Color(188, 164, 255), new Color(168, 144, 240), new Color(148, 124, 220), new Color(178, 154, 247)}, new Color(250, 250, 250)),
         TYPE_PSYCHIC(new Color[]{new Color(255, 108, 156), new Color(248, 88, 136), new Color(228, 68, 116), new Color(251, 98, 146)}, new Color(250, 250, 250)),
         TYPE_BUG(new Color[]{new Color(188, 204, 52), new Color(168, 184, 32), new Color(148, 164, 12), new Color(178, 194, 42)}, new Color(250, 250, 250)),
@@ -39,7 +39,7 @@ public class PixelCommandButton extends JButton {
         TYPE_GHOST(new Color[]{new Color(132, 108, 172), new Color(112, 88, 152), new Color(92, 68, 132), new Color(122, 98, 162)}, new Color(250, 250, 250)),
         TYPE_DRAGON(new Color[]{new Color(132, 76, 255), new Color(112, 56, 248), new Color(92, 36, 228), new Color(122, 66, 251)}, new Color(250, 250, 250)),
         TYPE_DARK(new Color[]{new Color(132, 108, 92), new Color(112, 88, 72), new Color(92, 68, 52), new Color(122, 98, 82)}, new Color(250, 250, 250)),
-        TYPE_STEEL(new Color[]{new Color(204, 204, 228), new Color(184, 184, 208), new Color(164, 164, 188), new Color(194, 194, 218)}, new Color(50, 50, 50)),
+        TYPE_STEEL(new Color[]{new Color(204, 204, 228), new Color(184, 184, 208), new Color(164, 164, 188), new Color(194, 194, 218)}, new Color(250, 250, 250)),
         TYPE_FAIRY(new Color[]{new Color(255, 173, 192), new Color(238, 153, 172), new Color(218, 133, 152), new Color(246, 163, 182)}, new Color(250, 250, 250));
 
         final Color[] bands; // 4 banded colors top->bottom

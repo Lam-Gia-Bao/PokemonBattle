@@ -16,6 +16,7 @@ public class BattleView extends JFrame {
     private MessageView message;
     private CommandView command;
     private AIMoveView aiMoveView;
+    private TypeChartView typeChartView;
 
     public BattleView(BattleController controller, PokemonTeam playerTeam, PokemonTeam aiTeam) {
         this.controller = controller;
@@ -40,7 +41,7 @@ public class BattleView extends JFrame {
         aiBar = new HealthBarView(currentAi, false);
         playerBar = new HealthBarView(currentPlayer, true);
         message = new MessageView("");
-        command = new CommandView(controller, currentPlayer, playerTeam, message);
+        command = new CommandView(controller, currentPlayer, playerTeam, message, this);
         aiMoveView = new AIMoveView(currentAi);
 
         loadImg.add(aiBar);
@@ -48,6 +49,11 @@ public class BattleView extends JFrame {
         loadImg.add(command);
         loadImg.add(message);
         loadImg.add(aiMoveView);
+        
+        // Tạo TypeChartView sẵn nhưng ẩn
+        typeChartView = new TypeChartView(() -> hideTypeChart(), this);
+        typeChartView.setVisible(false);
+        loadImg.add(typeChartView);
 
         add(loadImg);
         
@@ -172,5 +178,29 @@ public class BattleView extends JFrame {
 
     public BattleController getController() {
         return controller;
+    }
+    
+    public void showTypeChart() {
+        if (typeChartView != null) {
+            // Đưa TypeChartView lên trước
+            loadImg.setComponentZOrder(typeChartView, 0);
+            typeChartView.setVisible(true);
+            loadImg.repaint();
+        }
+    }
+    
+    public void hideTypeChart() {
+        if (typeChartView != null) {
+            typeChartView.setVisible(false);
+            loadImg.repaint();
+        }
+    }
+    
+    public LoadImgView getLoadImg() {
+        return loadImg;
+    }
+    
+    public CommandView getCommand() {
+        return command;
     }
 }

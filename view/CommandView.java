@@ -16,10 +16,12 @@ public class CommandView extends JPanel {
     private JButton[] pokemonButtons;
     private final BattleController controller;
     private final MessageView message;
+    private final BattleView battleView;
 
-    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, MessageView messageView) {
+    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, MessageView messageView, BattleView battleView) {
         this.controller = controller;
         this.message = messageView;
+        this.battleView = battleView;
         setLayout(null);
         setOpaque(false);
         setBounds(820, 520, 410, 160);
@@ -92,7 +94,10 @@ public class CommandView extends JPanel {
             showMovePanel(true);
             enableMainButtons(false);
         });
-        bagBtn.addActionListener(e -> this.message.showNoBagItemsMessage());
+        bagBtn.addActionListener(e -> {
+            disableAll();
+            battleView.showTypeChart();
+        });
         pokeBtn.addActionListener(e -> {
             showPokemonPanel(true);
             enableMainButtons(false);

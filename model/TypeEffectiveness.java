@@ -181,6 +181,10 @@ public final class TypeEffectiveness {
         CHART.get(atk).put(def, mult);
     }
 
+    public static double getMultiplier(PokemonType attackType, PokemonType defType) {
+        if (attackType == null || defType == null) return 1.0;
+        return CHART.getOrDefault(attackType, Map.of()).getOrDefault(defType, 1.0);
+    }
     
     public static double getMultiplier(PokemonType attackType, PokemonType def1, PokemonType def2) {
         if (attackType == null || def1 == null) return 1.0;
