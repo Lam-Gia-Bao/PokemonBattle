@@ -24,7 +24,7 @@ public class PokemonData {
     charizard.addMove(new Move("Dragon Breath", PokemonType.DRAGON, 60, 20));
     charizard.addMove(new Move("FlameThrower", PokemonType.FIRE, 100, 15));
     charizard.addMove(new Move("Flare Blitz", PokemonType.FIRE, 120, 5));
-    charizard.addMove(new Move("Heat Wave", PokemonType.FIRE, 95, 10));
+    charizard.addMove(new Move("Recover", PokemonType.NORMAL, 0, 5, true, 150));
     return charizard;
 	}
     public static Pokemon pokemonSuicune() {
@@ -144,7 +144,7 @@ public class PokemonData {
     jirachi.addMove(new Move("Meteor Beam", PokemonType.PSYCHIC, 120, 10));
     jirachi.addMove(new Move("Spychic", PokemonType.PSYCHIC, 90, 10));
     jirachi.addMove(new Move("Doom Desire", PokemonType.STEEL, 140, 5));
-    jirachi.addMove(new Move("Double-Edge", PokemonType.NORMAL, 120, 15));
+    jirachi.addMove(new Move("Recover", PokemonType.NORMAL, 0, 5, true, 150));
     return jirachi;
     }
     public static Pokemon pokemonGyarados() {
@@ -197,7 +197,7 @@ public class PokemonData {
     }
     public static Pokemon pokemonArceus() {
     Pokemon arceus = new Pokemon("Arceus", PokemonType.NORMAL, 202, 121, 202, 524);
-    arceus.addMove(new Move("Hyper Voice", PokemonType.NORMAL, 90, 10));
+    arceus.addMove(new Move("Nature's Gift", PokemonType.NORMAL, 0, 5, true, 100));
     arceus.addMove(new Move("Spychic", PokemonType.PSYCHIC, 90, 10));
     arceus.addMove(new Move("Hyper Beam", PokemonType.NORMAL, 150, 5));
     arceus.addMove(new Move("Judgment", PokemonType.NORMAL, 100, 10));

@@ -52,7 +52,8 @@ public class TypeChartView extends JPanel {
             closeBtn.addActionListener(e -> {
                 setVisible(false);
                 battleView.hideTypeChart();
-                battleView.getCommand().enableMainButtons(true);
+                // Khôi phục toàn bộ nút (bao gồm nút đổi Pokemon)
+                battleView.getCommand().enablePlayerInteraction();
             });
             add(closeBtn);
         } else {
@@ -68,7 +69,7 @@ public class TypeChartView extends JPanel {
             closeBtn.addActionListener(e -> {
                 setVisible(false);
                 battleView.hideTypeChart();
-                battleView.getCommand().enableMainButtons(true);
+                battleView.getCommand().enablePlayerInteraction();
             });
             add(closeBtn);
         }
