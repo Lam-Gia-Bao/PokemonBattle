@@ -5,7 +5,7 @@ public class AI {
 	private static final int ALPHA_INIT = Integer.MIN_VALUE + 1;
 	private static final int BETA_INIT = Integer.MAX_VALUE - 1;
 	
-	// Hàm chính: Chọn move dựa trên % máu
+	///Chọn move dựa trên % máu
 	public static Move chooseBestMove(Pokemon ai, Pokemon player) {
 		double hpPercent = (double) ai.getHp() / ai.getMaxHp();
 		
@@ -23,7 +23,7 @@ public class AI {
 		}
 	}
 	
-	// Minimax cho % máu cao (>70%): Ưu tiên sát thương
+	// Minimax cho 70% máu: Ưu tiên sát thương
 	public static Move chooseBestMoveAggressive(Pokemon ai, Pokemon player) {
 		Move bestMove = null;
 		int maxDamage = Integer.MIN_VALUE;
@@ -102,7 +102,7 @@ public class AI {
 		return bestMove != null ? bestMove : ai.getMoves().get(0);
 	}
 
-	// --- Benchmark hỗ trợ tính giá trị tìm kiếm với độ sâu tùy chọn ---
+	// Tính giá trị tìm kiếm với độ sâu tùy chọn
 	public static int evaluateMinimaxValue(Pokemon ai, Pokemon player, int depth) {
 		Node root = new Node(ai, player, null);
 		root.generateChildren(true);
@@ -125,7 +125,7 @@ public class AI {
 		return best;
 	}
 	
-	// Thuật toán minimax phòng thủ (tăng trọng số HP của AI)
+	// Thuật toán minimax phòng thủ
 	private static int minimaxDefensive(boolean maxMin, Node state, int depth) {
 		if (depth == 0 || state.isOver()) {
 			return heuristicDefensive(state);
@@ -191,7 +191,7 @@ public class AI {
 		}
 	}
 
-	// Thuật toán alpha-beta pruning
+	// Thuật toán cắt tỉa alpha-beta
 	private static int alphaBeta(boolean maxMin, Node state, int depth, int alpha, int beta) {
 		if (depth == 0 || state.isOver()) {
 			return heuristic(state);

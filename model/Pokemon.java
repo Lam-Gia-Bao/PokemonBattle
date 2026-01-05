@@ -101,7 +101,7 @@ public class Pokemon {
         if (move.isHealingMove()) {
             int healAmount = move.getHealAmount();
             this.heal(healAmount);
-            return healAmount; // Trả về số máu đã hồi
+            return healAmount;
         }
         
         // Nếu là skill tấn công
