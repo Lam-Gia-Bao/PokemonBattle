@@ -25,23 +25,21 @@ public class BenchmarkSearch {
         Pokemon player = playerTeam.getCurrentPokemon();
         Pokemon ai = aiTeam.getCurrentPokemon();
 
-        System.out.println("Depth,Minimax_MemKB,Minimax_TimeMs,AlphaBeta_MemKB,AlphaBeta_TimeMs");
+        System.out.println("Depth, Minimax_MemKB, Minimax_TimeMs, AlphaBeta_MemKB, AlphaBeta_TimeMs");
         for (int depth = 1; depth <= 10; depth++) {
             System.gc();
-            long memBefore = usedMemoryKb();
             long t0 = System.nanoTime();
             AI.evaluateMinimaxValue(ai, player, depth);
             long minimaxMs = (System.nanoTime() - t0) / 1_000_000;
             long minimaxMem = usedMemoryKb();
 
             System.gc();
-            long memBeforeAb = usedMemoryKb();
             long t1 = System.nanoTime();
             AI.evaluateAlphaBetaValue(ai, player, depth);
             long alphaBetaMs = (System.nanoTime() - t1) / 1_000_000;
             long alphaBetaMem = usedMemoryKb();
 
-            System.out.printf("%d,%d,%d,%d,%d%n", depth, minimaxMem, minimaxMs, alphaBetaMem, alphaBetaMs);
+            System.out.printf("%d. %d, %d -- %d, %d%n", depth, minimaxMem, minimaxMs, alphaBetaMem, alphaBetaMs);
         }
     }
 }

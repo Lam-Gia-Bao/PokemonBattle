@@ -41,7 +41,7 @@ public class TypeChartView extends JPanel {
             // Set bounds cho panel chứa ảnh + nút X
             setBounds(x - 25, y - 25, imgWidth + 50, imgHeight + 50);
             
-            // Nút X ở góc trên phải, bên ngoài ảnh
+            // Nút X ở góc trên phải
             closeBtn = new JButton("X");
             closeBtn.setBounds(imgWidth + 10, 0, 40, 40);
             closeBtn.setFont(new Font("Arial", Font.BOLD, 22));
@@ -52,7 +52,7 @@ public class TypeChartView extends JPanel {
             closeBtn.addActionListener(e -> {
                 setVisible(false);
                 battleView.hideTypeChart();
-                // Khôi phục toàn bộ nút (bao gồm nút đổi Pokemon)
+                // Khôi phục toàn bộ nút
                 battleView.getCommand().enablePlayerInteraction();
             });
             add(closeBtn);
@@ -86,7 +86,7 @@ public class TypeChartView extends JPanel {
             int scaledHeight = (int)(chartImage.getHeight() * scale);
             g.drawImage(chartImage, 25, 25, scaledWidth, scaledHeight, this);
         } else {
-            // Fallback: vẽ background nếu ảnh không load được
+            // Fallback nếu ảnh không load được
             g.setColor(new Color(240, 240, 240));
             g.fillRect(25, 25, getWidth() - 50, getHeight() - 50);
             g.setColor(Color.BLACK);

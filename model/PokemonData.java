@@ -160,7 +160,7 @@ public class PokemonData {
     rayquaza.addMove(new Move("Dragon Ascent", PokemonType.FLYING, 120, 5));
     rayquaza.addMove(new Move("Hurricane", PokemonType.FLYING, 110, 10));
     rayquaza.addMove(new Move("Outrage", PokemonType.DRAGON, 120, 10));
-    rayquaza.addMove(new Move("Hyper Beam", PokemonType.NORMAL, 150, 5));
+    rayquaza.addMove(new Move("Roost", PokemonType.NORMAL, 0, 5, true, 150));
     return rayquaza;
     }
     public static Pokemon pokemonZekrom() {

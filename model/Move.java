@@ -8,7 +8,7 @@ public class Move {
     private final int maxPp;
     private int pp;
     private final boolean isHealingMove;
-    private final int healAmount; // Số máu hồi (0 nếu không phải skill hồi)
+    private final int healAmount; // Số máu hồi nếu là move hồi máu
 
     public Move(String name, PokemonType type, int power, int pp) {
         this(name, type, power, pp, false, 0);
