@@ -2,6 +2,8 @@ package model;
 
 public class AI {
 	private static final int MAX_DEPTH = 3; // Giới hạn độ sâu tìm kiếm, AI sẽ dự đoán truớc 3 lượt
+	private static final int ALPHA_INIT = Integer.MIN_VALUE + 1;
+	private static final int BETA_INIT = Integer.MAX_VALUE - 1;
 	
 	// Hàm chính: Chọn move dựa trên % máu
 	public static Move chooseBestMove(Pokemon ai, Pokemon player) {
@@ -99,6 +101,29 @@ public class AI {
 		
 		return bestMove != null ? bestMove : ai.getMoves().get(0);
 	}
+
+	// --- Benchmark hỗ trợ tính giá trị tìm kiếm với độ sâu tùy chọn ---
+	public static int evaluateMinimaxValue(Pokemon ai, Pokemon player, int depth) {
+		Node root = new Node(ai, player, null);
+		root.generateChildren(true);
+		int best = Integer.MIN_VALUE;
+		for (Node child : root.getChildren()) {
+			int val = minimax(false, child, depth - 1);
+			if (val > best) best = val;
+		}
+		return best;
+	}
+
+	public static int evaluateAlphaBetaValue(Pokemon ai, Pokemon player, int depth) {
+		Node root = new Node(ai, player, null);
+		root.generateChildren(true);
+		int best = Integer.MIN_VALUE;
+		for (Node child : root.getChildren()) {
+			int val = alphaBeta(false, child, depth - 1, ALPHA_INIT, BETA_INIT);
+			if (val > best) best = val;
+		}
+		return best;
+	}
 	
 	// Thuật toán minimax phòng thủ (tăng trọng số HP của AI)
 	private static int minimaxDefensive(boolean maxMin, Node state, int depth) {
@@ -163,6 +188,31 @@ public class AI {
 				}
 			}
 			return temp;
+		}
+	}
+
+	// Thuật toán alpha-beta pruning
+	private static int alphaBeta(boolean maxMin, Node state, int depth, int alpha, int beta) {
+		if (depth == 0 || state.isOver()) {
+			return heuristic(state);
+		}
+
+		if (maxMin) {
+			state.generateChildren(true);
+			for (Node child : state.getChildren()) {
+				int value = alphaBeta(false, child, depth - 1, alpha, beta);
+				if (value > alpha) alpha = value;
+				if (beta <= alpha) break; // cắt tỉa
+			}
+			return alpha;
+		} else {
+			state.generateChildren(false);
+			for (Node child : state.getChildren()) {
+				int value = alphaBeta(true, child, depth - 1, alpha, beta);
+				if (value < beta) beta = value;
+				if (beta <= alpha) break; // cắt tỉa
+			}
+			return beta;
 		}
 	}
 	
