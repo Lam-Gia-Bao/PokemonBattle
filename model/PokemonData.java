@@ -180,12 +180,12 @@ public class PokemonData {
     return reshiram;
     }
     public static Pokemon pokemonKyurem() {
-    Pokemon kuyrem = new Pokemon("Kuyrem", PokemonType.ICE, 238, 166, 166, 454);
-    kuyrem.addMove(new Move("Blizzard", PokemonType.FIRE, 110, 5));
-    kuyrem.addMove(new Move("Hyper Voice", PokemonType.NORMAL, 90, 10));
-    kuyrem.addMove(new Move("Outrage", PokemonType.DRAGON, 120, 10));
-    kuyrem.addMove(new Move("Glaciate", PokemonType.ICE, 65, 10));
-    return kuyrem;
+    Pokemon kyurem = new Pokemon("Kyurem", PokemonType.ICE, 238, 166, 166, 454);
+    kyurem.addMove(new Move("Blizzard", PokemonType.FIRE, 110, 5));
+    kyurem.addMove(new Move("Hyper Voice", PokemonType.NORMAL, 90, 10));
+    kyurem.addMove(new Move("Outrage", PokemonType.DRAGON, 120, 10));
+    kyurem.addMove(new Move("Glaciate", PokemonType.ICE, 65, 10));
+    return kyurem;
     }
     public static Pokemon pokemonSnorlax() {
     Pokemon snorlax = new Pokemon("Snorlax", PokemonType.NORMAL, 202, 121, 202, 524);
