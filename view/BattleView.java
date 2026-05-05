@@ -1,9 +1,13 @@
 package view;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import model.Pokemon;
 import model.PokemonTeam;
+import model.PokemonData;
 import controller.BattleController;
 
 public class BattleView extends JFrame {
@@ -17,6 +21,7 @@ public class BattleView extends JFrame {
     private CommandView command;
     private AIMoveView aiMoveView;
     private TypeChartView typeChartView;
+    private boolean gameOver = false;
 
     public BattleView(BattleController controller, PokemonTeam playerTeam, PokemonTeam aiTeam) {
         this.controller = controller;
@@ -198,6 +203,120 @@ public class BattleView extends JFrame {
     
     public LoadImgView getLoadImg() {
         return loadImg;
+    }
+    
+    public void showResultView(boolean isVictory) {
+        if (gameOver) return;
+        gameOver = true;
+        
+        ResultView result = new ResultView(isVictory);
+        
+        // Chơi lại với Pokemon cũ
+        result.setOnReplayListener(() -> {
+            dispose();
+            PokemonTeam newPlayerTeam = new PokemonTeam();
+            PokemonTeam newAiTeam = new PokemonTeam();
+            
+            // Copy Pokemon từ team cũ
+            for (Pokemon p : playerTeam.getTeam()) {
+                newPlayerTeam.addPokemon(p);
+            }
+            for (Pokemon p : aiTeam.getTeam()) {
+                newAiTeam.addPokemon(p);
+            }
+            
+            BattleController newController = new BattleController(newPlayerTeam, newAiTeam);
+            
+            // Reset HP cho tất cả Pokemon
+            for (Pokemon p : newPlayerTeam.getTeam()) {
+                p.resetHP();
+            }
+            for (Pokemon p : newAiTeam.getTeam()) {
+                p.resetHP();
+            }
+            
+            newController.startBattle();
+        });
+        
+        // Chọn đội hình lại
+        result.setOnSelectPokemonListener(() -> {
+            dispose();
+            PokemonSelectionView selection = new PokemonSelectionView();
+            selection.addStartButtonListener(e2 -> {
+                startGameWithNewTeam(selection.getSelectedPokemons());
+                selection.closeSelection();
+            });
+        });
+        
+        // Quay về Menu
+        result.setOnMenuListener(() -> {
+            dispose();
+            new MenuView();
+        });
+    }
+    
+    private void startGameWithNewTeam(List<Pokemon> playerPokemons) {
+        // Tạo team cho player với pokemon đã chọn
+        PokemonTeam newPlayerTeam = new PokemonTeam();
+        for (Pokemon pokemon : playerPokemons) {
+            newPlayerTeam.addPokemon(pokemon);
+        }
+        
+        // Tạo team cho AI với 4 pokemon random
+        List<Pokemon> randomAIPokemons = getRandomPokemons(4);
+        PokemonTeam newAiTeam = new PokemonTeam();
+        for (Pokemon pokemon : randomAIPokemons) {
+            newAiTeam.addPokemon(pokemon);
+        }
+
+        BattleController newController = new BattleController(newPlayerTeam, newAiTeam);
+        newController.startBattle();
+    }
+    
+    private List<Pokemon> getRandomPokemons(int count) {
+        // Danh sách tất cả pokemon
+        List<Pokemon> allPokemons = new ArrayList<>();
+        allPokemons.add(PokemonData.pokemonPikachu());
+        allPokemons.add(PokemonData.pokemonPidgey());
+        allPokemons.add(PokemonData.pokemonCharizard());
+        allPokemons.add(PokemonData.pokemonSuicune());
+        allPokemons.add(PokemonData.pokemonGreninja());
+        allPokemons.add(PokemonData.pokemonHaxorus());
+        allPokemons.add(PokemonData.pokemonGiratina());
+        allPokemons.add(PokemonData.pokemonGengar());
+        allPokemons.add(PokemonData.pokemonSteelix());
+        allPokemons.add(PokemonData.pokemonMagearna());
+        allPokemons.add(PokemonData.pokemonSerperior());
+        allPokemons.add(PokemonData.pokemonSceptile());
+        allPokemons.add(PokemonData.pokemonVolcarona());
+        allPokemons.add(PokemonData.pokemonScizor());
+        allPokemons.add(PokemonData.pokemonVileplume());
+        allPokemons.add(PokemonData.pokemonNidoking());
+        allPokemons.add(PokemonData.pokemonMewtwo());
+        allPokemons.add(PokemonData.pokemonJirachi());
+        allPokemons.add(PokemonData.pokemonGyarados());
+        allPokemons.add(PokemonData.pokemonRayquaza());
+        allPokemons.add(PokemonData.pokemonZekrom());
+        allPokemons.add(PokemonData.pokemonReshiram());
+        allPokemons.add(PokemonData.pokemonKyurem());
+        allPokemons.add(PokemonData.pokemonSnorlax());
+        allPokemons.add(PokemonData.pokemonArceus());
+        allPokemons.add(PokemonData.pokemonLapras());
+        allPokemons.add(PokemonData.pokemonDrapion());
+        allPokemons.add(PokemonData.pokemonAbsol());
+        allPokemons.add(PokemonData.pokemonTyranitar());
+        allPokemons.add(PokemonData.pokemonArcheops());
+        allPokemons.add(PokemonData.pokemonMachamp());
+        allPokemons.add(PokemonData.pokemonLucario());
+        allPokemons.add(PokemonData.pokemonGolem());
+        allPokemons.add(PokemonData.pokemonRhydon());
+        allPokemons.add(PokemonData.pokemonGardevoir());
+        
+        // Xáo trộn danh sách
+        Collections.shuffle(allPokemons);
+        
+        // Lấy 4 pokemon đầu tiên từ danh sách đã xáo trộn
+        return allPokemons.subList(0, count);
     }
     
     public CommandView getCommand() {

@@ -53,6 +53,7 @@ public class BattleController {
                 view.queueWinMessage();
                 view.startMessageQueue(() -> {
                     view.disableAllButtons();
+                    view.showResultView(true);
                 });
             }
             return;
@@ -105,6 +106,9 @@ public class BattleController {
             } else {
                 view.queueLoseMessage();
                 view.startMessageQueue(() -> view.disableAllButtons());
+                view.startMessageQueue(() -> {
+                    view.showResultView(false);
+                });
             }
         } else {
             view.startMessageQueue(() -> view.enableMoveButtons());

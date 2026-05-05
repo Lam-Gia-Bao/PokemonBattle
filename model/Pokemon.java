@@ -90,6 +90,10 @@ public class Pokemon {
         if (this.hp > this.maxHp) this.hp = this.maxHp;
     }
 
+    public void resetHP() {
+        this.hp = this.maxHp;
+    }
+
     
     public int attack(Pokemon target, Move move) {
         if (this.isFainted()) return 0;
