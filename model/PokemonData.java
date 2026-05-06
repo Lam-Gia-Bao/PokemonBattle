@@ -11,12 +11,12 @@ public class PokemonData {
 	}
     
     public static Pokemon pokemonPidgey() {
-    Pokemon pidgey = new Pokemon("Pidgey", PokemonType.FLYING, 85, 76, 67, 284);
-    pidgey.addMove(new Move("Gust", PokemonType.FLYING, 40, 10));
-    pidgey.addMove(new Move("Tackle", PokemonType.NORMAL, 35, 20));
-    pidgey.addMove(new Move("Quick Attack", PokemonType.NORMAL, 40, 25));
-    pidgey.addMove(new Move("Wing Attack", PokemonType.FLYING, 60, 35));
-    return pidgey;
+    Pokemon hydreigon = new Pokemon("Hydreigon", PokemonType.FLYING, 193, 90, 98, 388);
+    hydreigon.addMove(new Move("Tri Attack", PokemonType.FLYING, 80, 10));
+    hydreigon.addMove(new Move("Body Slam", PokemonType.NORMAL, 85, 10));
+    hydreigon.addMove(new Move("Hyper Voice", PokemonType.NORMAL, 90, 25));
+    hydreigon.addMove(new Move("Wing Attack", PokemonType.FLYING, 60, 35));
+    return hydreigon;
     }
     
     public static Pokemon pokemonCharizard() {

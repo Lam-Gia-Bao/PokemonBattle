@@ -115,7 +115,7 @@ public class ResultView extends JFrame {
         buttonPanel.add(replayButton);
 
         // Nút "Chọn Đội Hình Lại"
-        selectPokemonButton = new PixelCommandButton("Chọn Đội Hình Lại", PixelCommandButton.Theme.ORANGE);
+        selectPokemonButton = new PixelCommandButton("Chọn Lại Đội Hình", PixelCommandButton.Theme.ORANGE);
         selectPokemonButton.setFont(new Font("Arial", Font.BOLD, 20));
         selectPokemonButton.addActionListener(e -> {
             if (onSelectPokemon != null) onSelectPokemon.run();
