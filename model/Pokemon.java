@@ -80,9 +80,10 @@ public class Pokemon {
         return hp <= 0;
     }
 
+    // UC4.4.5: Cập nhật HP của Pokemon sau khi nhận sát thương
     public void receiveDmg(int damage) {
         this.hp -= damage;
-        if (this.hp < 0) this.hp = 0;
+        if (this.hp < 0) this.hp = 0;  // Ensure HP never goes below 0
     }
 
     public void heal(int amount) {
@@ -95,22 +96,43 @@ public class Pokemon {
     }
 
     
+    // ============================================
+    // UC4.4: THỰC HIỆN TẤN CÔNG
+    // ============================================
+    
+    /**
+     * UC4.4.1 - Thực hiện tấn công bằng một nước đi
+     * 
+     * Flow:
+     *   UC4.4.2: Gọi Move.calculateDamage() để tính sát thương (UC4.5)
+     *   UC4.4.4: Defender nhận sát thương via receiveDmg()
+     *   UC4.4.5: Cập nhật HP của Defender
+     *   UC4.4.6: Trả về giá trị sát thương
+     */
     public int attack(Pokemon target, Move move) {
         if (this.isFainted()) return 0;
         if (move == null || !move.isUsable()) return 0;
 
+        // Sử dụng 1 PP (Power Point) của nước đi
         move.useMove();
         
-        // Nếu là skill hồi máu, hồi cho bản thân
+        // Xử lý nước đi hồi máu (ngoại lệ khác UC4)
         if (move.isHealingMove()) {
             int healAmount = move.getHealAmount();
             this.heal(healAmount);
             return healAmount;
         }
         
-        // Nếu là skill tấn công
+        // ========== UC4.4: TẤN CÔNG THƯỜNG =========
+        // UC4.4.2: Gọi Move.calculateDamage() để tính sát thương
+        // Công thức: Damage = power × (ATK/DEF) × STAB × effectiveness
         int damage = move.calculateDamage(this, target);
+        
+        // UC4.4.4-5: Defender nhận damage
+        // newHP = max(0, currentHP - damage)
         target.receiveDmg(damage);
+        
+        // UC4.4.6: Trả về giá trị sát thương
         return damage;
     }
 }

@@ -44,6 +44,10 @@ public class CommandView extends JPanel {
         movePanel.setVisible(false);
         moveButtons = new JButton[player.getMoves().size()];
 
+        // ============================================
+        // UC4.1: NGƯỜI CHƠI CHỌN NƯỚC ĐI
+        // ============================================
+        
         for (int i = 0; i < moveButtons.length; i++) {
             final int idx = i;
             Move move = player.getMoves().get(i);
@@ -52,9 +56,14 @@ public class CommandView extends JPanel {
             String powerInfo = String.valueOf(move.getPower());
             moveButtons[i] = new PixelCommandButton(move.getName(), ppInfo, powerInfo, moveTheme);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
+            
+            // UC4.1.1: Xử lý sự kiện click nút nước đi
             moveButtons[i].addActionListener(e -> {
-                showMovePanel(false);
-                enableMainButtons(true);
+                showMovePanel(false);                   // Ẩn panel nước đi
+                enableMainButtons(true);                // Hiển thị lại 4 nút chính
+                
+                // UC4.1.2: Gọi BattleController.playerMove(moveIndex)
+                // Điều này sẽ kích hoạt toàn bộ flow UC4 (UC4.2 -> UC4.7)
                 controller.playerMove(idx);
             });
             movePanel.add(moveButtons[i]);

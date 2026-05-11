@@ -80,9 +80,14 @@ public class BattleView extends JFrame {
         });
     }
 
+    // ============================================
+    // UC4.6: CẬP NHẬT GIAO DIỆN
+    // ============================================
+    
+    // UC4.6.3: Cập nhật thanh máu (HP bars) cho cả hai Pokemon
     public void updateHPBars() {
-        playerBar.updateHP();
-        aiBar.updateHP();
+        playerBar.updateHP();      // Cập nhật HP bar của Player
+        aiBar.updateHP();          // Cập nhật HP bar của AI
     }
 
     public void showMessage(String msg) {
@@ -107,12 +112,14 @@ public class BattleView extends JFrame {
         command.enablePlayerInteraction();
     }
 
+    // UC4.6.5: Cập nhật PP của các nước đi của AI
     public void updateAIMoveDisplay() {
         if (aiMoveView != null) {
             aiMoveView.updateMoves();
         }
     }
     
+    // UC4.6.4: Cập nhật PP của các nước đi của Player
     public void updatePlayerMoveDisplay() {
         if (command != null) {
             command.updateMoveButtons(playerTeam.getCurrentPokemon());
@@ -144,11 +151,18 @@ public class BattleView extends JFrame {
         message.clearQueue();
     }
     
-    //Hàng đợi các message để các thoại có thể hiển thị lần lượt
+    // ============================================
+    // UC4.6.1-2: HÀNG ĐỢI THÔNG BÁO
+    // ============================================
+    // Hiển thị các thông báo lần lượt (queue)
+    // Ví dụ: "Pikachu used Thunderbolt!" → "It's super effective! 45 damage!" → ...
+    
+    // UC4.6.1: Hiển thị thông báo nước đi được sử dụng
     public void queueUsingMoveMessage(Pokemon attacker, String moveName) {
         message.queueUsingMoveMessage(attacker, moveName);
     }
     
+    // UC4.6.2: Hiển thị thông báo sát thương + hiệu ứng khắc hệ
     public void queueDamageMessage(int damage, String moveName) {
         message.queueDamageMessage(damage, moveName);
     }

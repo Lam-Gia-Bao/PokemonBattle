@@ -60,34 +60,53 @@ public class Move {
         return healAmount;
     }
 
+    // ============================================
+    // UC4.5: TÍNH TOÁN SÁT THƯƠNG
+    // ============================================
+    
     /**
-     * Tính damage:
-     * Damage = round( power * (A / D) * STAB * effectiveness )
-     * - A = attacker.atk 
-     * - D = defender.def (>=1)
-     * - STAB = 1.5 nếu attacker có cùng 1 trong 2 type với move.type
-     * - effectiveness từ TypeEffectiveness.getMultiplier(...)
+     * UC4.5: Tính sát thương của nước đi
+     * 
+     * Công thức:
+     *   Damage = round( power × (ATK / DEF) × STAB × effectiveness )
+     * 
+     * Tham số:
+     *   - power: Sức mạnh cơ bản của nước đi (ví dụ: Thunderbolt = 90)
+     *   - A (ATK): Chỉ số tấn công của attacker
+     *   - D (DEF): Chỉ số phòng thủ của defender (tối thiểu 1 để tránh chia 0)
+     *   - STAB: Same Type Attack Bonus = 1.5 nếu move.type trùng với type của Pokemon
+     *   - effectiveness: Nhân tố từ bảng khắc hệ (0.0, 0.5, 1.0, 2.0)
+     * 
+     * Flow:
+     *   UC4.5.1: Tính base damage = power × (ATK / DEF)
+     *   UC4.5.2-3: Gọi TypeEffectiveness.getMultiplier() lấy effectiveness
+     *   UC4.5.4: Áp dụng STAB (1.5x nếu move.type = Pokemon.type)
+     *   UC4.5.5: Tính final damage = round(base × STAB × effectiveness)
      */
     public int calculateDamage(Pokemon attacker, Pokemon defender) {
         if (attacker == null || defender == null) return 0;
 
+        // UC4.5.1: Tính Base Damage = power × (ATK / DEF)
         double A = Math.max(1.0, attacker.getAtk());
-        double D = Math.max(1.0, defender.getDef()); // tránh chia 0
+        double D = Math.max(1.0, defender.getDef());  // Tránh chia cho 0
         double base = (double) this.power * (A / D);
 
-        // STAB: hệ của kỹ năng cùng hệ với hệ của pokemon
+        // UC4.5.4: Áp dụng STAB (Same Type Attack Bonus)
+        // STAB = 1.5 nếu nước đi có cùng type với một trong 2 type của Pokemon
         double stab = 1.0;
         PokemonType t1 = attacker.getType1();
         PokemonType t2 = attacker.getType2();
         if (t1 != null && this.type == t1) stab = 1.5;
         else if (t2 != null && this.type == t2) stab = 1.5;
 
-        // effectiveness: so sánh move.type vs defender's types
+        // UC4.5.2-3: Lấy Effectiveness từ bảng khắc hệ
+        // Trả về: 0.0 (không hiệu quả), 0.5 (yếu), 1.0 (trung), 2.0 (mạnh)
         double eff = TypeEffectiveness.getMultiplier(this.type, defender.getType1(), defender.getType2());
 
+        // UC4.5.5: Tính final damage
         double raw = base * stab * eff;
         int dmg = (int) Math.round(raw);
-        if (dmg < 1) dmg = 1;
+        if (dmg < 1) dmg = 1;  // Minimum 1 damage
         return dmg;
     }
 }

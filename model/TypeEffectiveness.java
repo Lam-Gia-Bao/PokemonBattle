@@ -181,18 +181,49 @@ public final class TypeEffectiveness {
         CHART.get(atk).put(def, mult);
     }
 
+    // ============================================
+    // UC4.5.2-3: LẤY TYPE EFFECTIVENESS
+    // ============================================
+    
+    /**
+     * UC4.5.2: Overload 1 - Lấy effectiveness cho 1 type
+     * @param attackType Loại của nước đi (ví dụ: ELECTRIC)
+     * @param defType Loại của Pokemon phòng thủ (ví dụ: WATER)
+     * @return Multiplier: 0.0 (không hiệu quả), 0.5 (yếu), 1.0 (trung), 2.0 (mạnh)
+     */
     public static double getMultiplier(PokemonType attackType, PokemonType defType) {
         if (attackType == null || defType == null) return 1.0;
         return CHART.getOrDefault(attackType, Map.of()).getOrDefault(defType, 1.0);
     }
     
+    /**
+     * UC4.5.3: Overload 2 - Lấy effectiveness cho Dual Type
+     * Pokemon có 2 loại → tính theo công thức: m1 × m2
+     * 
+     * Ví dụ:
+     *   - Electric move vs Water/Flying type
+     *   - m1 = Electric vs Water = 2.0
+     *   - m2 = Electric vs Flying = 2.0
+     *   - Kết quả = 2.0 × 2.0 = 4.0 (gấp 4 lần!)
+     * 
+     * @param attackType Loại của nước đi
+     * @param def1 Loại thứ nhất của Pokemon phòng thủ
+     * @param def2 Loại thứ hai của Pokemon phòng thủ (có thể null)
+     * @return Multiplier (tích của cả 2 type)
+     */
     public static double getMultiplier(PokemonType attackType, PokemonType def1, PokemonType def2) {
         if (attackType == null || def1 == null) return 1.0;
+        
+        // Lấy effectiveness vs type thứ 1
         double m1 = CHART.getOrDefault(attackType, Map.of()).getOrDefault(def1, 1.0);
+        
+        // Lấy effectiveness vs type thứ 2 (nếu có)
         double m2 = 1.0;
         if (def2 != null) {
             m2 = CHART.getOrDefault(attackType, Map.of()).getOrDefault(def2, 1.0);
         }
+        
+        // Trả về tích của 2 multiplier
         return m1 * m2;
     }
 }
