@@ -1,12 +1,12 @@
 package view;
 
-import javax.swing.*;
+import controller.BattleController;
 import java.awt.*;
+import javax.swing.*;
 import model.Move;
 import model.Pokemon;
 import model.PokemonTeam;
 import model.PokemonType;
-import controller.BattleController;
 
 public class CommandView extends JPanel {
     private JButton fightBtn, bagBtn, pokeBtn, runBtn;
