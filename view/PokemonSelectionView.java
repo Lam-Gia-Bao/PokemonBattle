@@ -1,12 +1,12 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.imageio.ImageIO;
 
@@ -22,9 +22,11 @@ public class PokemonSelectionView extends JFrame {
     private JLabel typeLabel;
     private JButton selectButton;
     private JButton deselectButton;
-    private List<Pokemon> selectedPokemons;
-    private List<JButton> pokemonButtons;
+    private List<Pokemon> allPokemons;
+    private final List<Pokemon> selectedPokemons;
+    private final List<JButton> pokemonButtons;
     private Pokemon currentPreviewPokemon;
+    private int editingSelectedIndex = -1;
     private static final int MAX_SELECTION = 4;
 
     public PokemonSelectionView() {
@@ -154,35 +156,51 @@ public class PokemonSelectionView extends JFrame {
 
     private void loadPokemonButtons() {
         // Danh sách tất cả pokemon
-        Pokemon[] allPokemons = getAllPokemons();
+        allPokemons = new ArrayList<>();
+        Collections.addAll(allPokemons, getAllPokemons());
 
-        for (Pokemon pokemon : allPokemons) {
+        for (int i = 0; i < allPokemons.size(); i++) {
+            Pokemon pokemon = allPokemons.get(i);
             PixelCommandButton.Theme theme = getTypeTheme(pokemon.getType());
             PixelCommandButton btn = new PixelCommandButton(pokemon.getName(), theme);
             btn.setFont(new Font("Arial", Font.PLAIN, 14));
             btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-            btn.addActionListener(e -> selectPokemon(pokemon, btn));
+            final int index = i;
+            btn.addActionListener(e -> selectAvailablePokemon(index));
             availablePanel.add(btn);
             pokemonButtons.add(btn);
         }
+
+        refreshAvailableButtons();
     }
 
-    private void selectPokemon(Pokemon pokemon, JButton sourceButton) {
+    private void selectAvailablePokemon(int index) {
+        if (index < 0 || index >= allPokemons.size()) return;
+
+        Pokemon pokemon = allPokemons.get(index);
+
         // Lưu Pokemon được preview
         currentPreviewPokemon = pokemon;
-        
+
+        // Chỉ reset chế độ edit khi team chưa đủ 4 (lúc đó không có chế độ thay thế)
+        if (selectedPokemons.size() < MAX_SELECTION) {
+            editingSelectedIndex = -1;
+        }
+
         // Hiển thị ảnh Pokemon được chọn ở giữa
         displaySelectedPokemonImage(pokemon);
-        
-        // Cập nhật trạng thái các nút Chọn/Hủy Chọn
-        if (selectedPokemons.contains(pokemon)) {
-            selectButton.setEnabled(false);
-            deselectButton.setEnabled(true);
-        } else {
-            selectButton.setEnabled(selectedPokemons.size() < MAX_SELECTION);
-            deselectButton.setEnabled(false);
-        }
+        updateActionButtons();
+    }
+
+    private void selectSelectedSlot(int index) {
+        if (index < 0 || index >= selectedPokemons.size()) return;
+
+        editingSelectedIndex = index;
+        currentPreviewPokemon = selectedPokemons.get(index);
+        displaySelectedPokemonImage(currentPreviewPokemon);
+        updateActionButtons();
+        updateSelectedPanel();
     }
 
     private void displaySelectedPokemonImage(Pokemon pokemon) {
@@ -204,90 +222,94 @@ public class PokemonSelectionView extends JFrame {
     }
     
     private void confirmSelectPokemon() {
-        if (currentPreviewPokemon != null && !selectedPokemons.contains(currentPreviewPokemon)) {
-            selectedPokemons.add(currentPreviewPokemon);
-            
-            // Disable nút của Pokemon đó
-            for (int i = 0; i < pokemonButtons.size(); i++) {
-                Pokemon[] allPokemons = getAllPokemons();
-                if (allPokemons[i].equals(currentPreviewPokemon)) {
-                    pokemonButtons.get(i).setEnabled(false);
-                }
-            }
-            
-            // Update UI
-            updateSelectedPanel();
-            updateStartButton();
-            selectButton.setEnabled(false);
-            deselectButton.setEnabled(true);
+        if (currentPreviewPokemon == null) return;
+
+        int currentSelectedIndex = selectedPokemons.indexOf(currentPreviewPokemon);
+        if (currentSelectedIndex >= 0) {
+            // Pokemon đã trong team rồi, không làm gì
+            editingSelectedIndex = currentSelectedIndex;
+            updateActionButtons();
+            return;
         }
+
+        // Pokemon chưa trong team
+        if (selectedPokemons.size() < MAX_SELECTION) {
+            // Team chưa đủ 4 → thêm mới
+            selectedPokemons.add(currentPreviewPokemon);
+            editingSelectedIndex = selectedPokemons.size() - 1;
+        } else if (editingSelectedIndex >= 0 && editingSelectedIndex < selectedPokemons.size()) {
+            // Team đã đủ 4 + đang edit 1 slot → thay thế
+            selectedPokemons.set(editingSelectedIndex, currentPreviewPokemon);
+        } else {
+            // Team đầy mà không đang edit slot nào → không làm gì
+            return;
+        }
+
+        refreshAvailableButtons();
+        updateSelectedPanel();
+        updateStartButton();
+        updateActionButtons();
     }
     
     private void confirmDeselectPokemon() {
-        if (currentPreviewPokemon != null && selectedPokemons.contains(currentPreviewPokemon)) {
-            selectedPokemons.remove(currentPreviewPokemon);
-            
-            // Enable nút của Pokemon đó
-            for (int i = 0; i < pokemonButtons.size(); i++) {
-                Pokemon[] allPokemons = getAllPokemons();
-                if (allPokemons[i].equals(currentPreviewPokemon)) {
-                    pokemonButtons.get(i).setEnabled(true);
-                }
-            }
-            
-            // Update UI
+        int targetIndex = -1;
+        if (currentPreviewPokemon != null) {
+            targetIndex = selectedPokemons.indexOf(currentPreviewPokemon);
+        }
+        if (targetIndex < 0) {
+            targetIndex = editingSelectedIndex;
+        }
+
+        if (targetIndex >= 0 && targetIndex < selectedPokemons.size()) {
+            Pokemon removedPokemon = selectedPokemons.remove(targetIndex);
+            currentPreviewPokemon = removedPokemon;
+            editingSelectedIndex = -1;
+
+            refreshAvailableButtons();
             updateSelectedPanel();
             updateStartButton();
-            selectButton.setEnabled(selectedPokemons.size() < MAX_SELECTION);
-            deselectButton.setEnabled(false);
+            displaySelectedPokemonImage(removedPokemon);
+            updateActionButtons();
         }
     }
 
     private void updateSelectedPanel() {
         selectedPanel.removeAll();
-        for (Pokemon pokemon : selectedPokemons) {
-            JPanel pokemonCardPanel = new JPanel(new BorderLayout());
-            pokemonCardPanel.setOpaque(false);
-            pokemonCardPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-            
-            JPanel imagePanel = new JPanel(new BorderLayout());
-            imagePanel.setOpaque(false);
-            
+        for (int i = 0; i < selectedPokemons.size(); i++) {
+            Pokemon pokemon = selectedPokemons.get(i);
+            JButton pokemonCardButton = new JButton();
+            pokemonCardButton.setLayout(new BorderLayout());
+            pokemonCardButton.setOpaque(true);
+            pokemonCardButton.setContentAreaFilled(true);
+            pokemonCardButton.setFocusPainted(false);
+            pokemonCardButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            pokemonCardButton.setBackground(new Color(25, 25, 25, 180));
+            pokemonCardButton.setBorder(BorderFactory.createLineBorder(
+                i == editingSelectedIndex ? Color.YELLOW : Color.WHITE,
+                i == editingSelectedIndex ? 3 : 2
+            ));
+
             try {
                 String pokemonName = pokemon.getName().toLowerCase();
                 File imageFile = new File("resources/" + pokemonName + "_front.png");
-                
                 if (imageFile.exists()) {
                     BufferedImage img = ImageIO.read(imageFile);
-                    Image scaledImage = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-                    JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-                    imageLabel.setHorizontalAlignment(JLabel.CENTER);
-                    imagePanel.add(imageLabel, BorderLayout.CENTER);
+                    Image scaledImage = img.getScaledInstance(90, 90, Image.SCALE_SMOOTH);
+                    pokemonCardButton.setIcon(new ImageIcon(scaledImage));
                 }
             } catch (Exception e) {
                 System.out.println("Error loading pokemon thumbnail: " + e.getMessage());
             }
-            
-            pokemonCardPanel.add(imagePanel, BorderLayout.CENTER);
-            
-            JPanel infoPanel = new JPanel(new BorderLayout());
-            infoPanel.setOpaque(false);
-            
-            JLabel nameLabel = new JLabel(pokemon.getName());
-            nameLabel.setFont(new Font("Arial", Font.BOLD, 10));
-            nameLabel.setForeground(Color.WHITE);
-            nameLabel.setHorizontalAlignment(JLabel.CENTER);
-            infoPanel.add(nameLabel, BorderLayout.NORTH);
-            
-            JLabel typeInfo = new JLabel("Type: " + pokemon.getType().toString());
-            typeInfo.setFont(new Font("Arial", Font.PLAIN, 9));
-            typeInfo.setForeground(Color.WHITE);
-            typeInfo.setHorizontalAlignment(JLabel.CENTER);
-            infoPanel.add(typeInfo, BorderLayout.SOUTH);
-            
-            pokemonCardPanel.add(infoPanel, BorderLayout.SOUTH);
-            
-            selectedPanel.add(pokemonCardPanel);
+
+            pokemonCardButton.setText("<html><center>" + pokemon.getName() + "<br/>" + pokemon.getType() + "</center></html>");
+            pokemonCardButton.setHorizontalTextPosition(SwingConstants.CENTER);
+            pokemonCardButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+            pokemonCardButton.setForeground(Color.WHITE);
+            pokemonCardButton.setFont(new Font("Arial", Font.BOLD, 11));
+            final int slotIndex = i;
+            pokemonCardButton.addActionListener(e -> selectSelectedSlot(slotIndex));
+
+            selectedPanel.add(pokemonCardButton);
         }
         selectedPanel.revalidate();
         selectedPanel.repaint();
@@ -295,6 +317,49 @@ public class PokemonSelectionView extends JFrame {
 
     private void updateStartButton() {
         startButton.setEnabled(selectedPokemons.size() == MAX_SELECTION);
+    }
+
+    private void refreshAvailableButtons() {
+        if (allPokemons == null || pokemonButtons == null) return;
+
+        for (int i = 0; i < allPokemons.size() && i < pokemonButtons.size(); i++) {
+            pokemonButtons.get(i).setEnabled(!selectedPokemons.contains(allPokemons.get(i)));
+        }
+    }
+
+    private void updateActionButtons() {
+        if (currentPreviewPokemon == null) {
+            selectButton.setEnabled(false);
+            deselectButton.setEnabled(false);
+            selectButton.setText("Chọn");
+            deselectButton.setText("Xóa");
+            return;
+        }
+
+        int currentSelectedIndex = selectedPokemons.indexOf(currentPreviewPokemon);
+        boolean previewIsSelected = currentSelectedIndex >= 0;
+        boolean canEditSelectedSlot = editingSelectedIndex >= 0 && editingSelectedIndex < selectedPokemons.size();
+
+        if (previewIsSelected) {
+            editingSelectedIndex = currentSelectedIndex;
+            selectButton.setText("Đã chọn");
+            selectButton.setEnabled(false);
+            deselectButton.setText("Xóa");
+            deselectButton.setEnabled(true);
+            return;
+        }
+
+        if (canEditSelectedSlot) {
+            selectButton.setText("Thay Thế");
+            selectButton.setEnabled(true);
+            deselectButton.setText("Xóa");
+            deselectButton.setEnabled(true);
+        } else {
+            selectButton.setText("Chọn");
+            selectButton.setEnabled(selectedPokemons.size() < MAX_SELECTION);
+            deselectButton.setText("Xóa");
+            deselectButton.setEnabled(false);
+        }
     }
 
     public List<Pokemon> getSelectedPokemons() {
