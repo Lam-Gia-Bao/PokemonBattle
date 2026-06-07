@@ -112,7 +112,29 @@ public class CommandView extends JPanel {
         });
         
         runBtn.addActionListener(e -> this.message.showCannotRunMessage());
-    } 
+
+        // --- CÀI ĐẶT PHÍM TẮT 1, 2, 3, 4 CHO CHIÊU THỨC ---
+        InputMap im = movePanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = movePanel.getActionMap();
+
+        for (int i = 0; i < 4; i++) {
+            final int moveIndex = i;
+            // Gắn phím 1, 2, 3, 4 cho vị trí 0, 1, 2, 3 trong mảng Move
+            im.put(KeyStroke.getKeyStroke(String.valueOf(moveIndex + 1)), "useMove" + moveIndex);
+
+            am.put("useMove" + moveIndex, new AbstractAction() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    // Kiểm tra xem bảng Move có đang mở và nút đó có xài được không
+                    if (movePanel.isVisible() && moveIndex < moveButtons.length &&
+                            moveButtons[moveIndex] != null && moveButtons[moveIndex].isEnabled()) {
+
+                        moveButtons[moveIndex].doClick(); // Tự động bấm nút
+                    }
+                }
+            });
+        }
+    }
 
     public void updateBagPanel() {
         bagPanel.removeAll();
@@ -301,21 +323,48 @@ public class CommandView extends JPanel {
      * Đồng bộ lại thông tin chiêu thức khi Pokemon hiện tại thay đổi chỉ số PP
      */
     public void updateMoveButtons(Pokemon pokemon) {
+        Pokemon aiPokemon = controller.getAiTeam().getCurrentPokemon();
+
         for (int i = 0; i < moveButtons.length && i < pokemon.getMoves().size(); i++) {
             Move move = pokemon.getMoves().get(i);
             PixelCommandButton.Theme moveTheme = getTypeTheme(move.getType());
             String ppInfo = "PP:" + move.getPp() + "/" + move.getMaxPp();
             String powerInfo = String.valueOf(move.getPower());
-            
+
+            boolean isUsable = move.isUsable();
+            if (!isUsable) moveTheme = PixelCommandButton.Theme.GRAY;
+
             final int idx = i;
             PixelCommandButton newBtn = new PixelCommandButton(move.getName(), ppInfo, powerInfo, moveTheme);
             newBtn.setFont(new Font("Arial", Font.BOLD, 18));
+            newBtn.setEnabled(isUsable);
+
+            if (!isUsable) {
+                newBtn.setToolTipText("Chiêu thức này đã hết PP!");
+            } else if (aiPokemon != null && move.getPower() > 0 && !move.isHealingMove()) {
+                int estDamage = move.calculateDamage(pokemon, aiPokemon);
+                double eff = model.TypeEffectiveness.getMultiplier(move.getType(), aiPokemon.getType1(), aiPokemon.getType2());
+                String effText = "Bình thường";
+                String color = "white";
+                if (eff > 1.0) { effText = "Siêu hiệu quả!"; color = "#00FF00"; }
+                else if (eff < 1.0 && eff > 0) { effText = "Không hiệu quả lắm..."; color = "#FF9900"; }
+                else if (eff == 0) { effText = "Không có tác dụng!"; color = "#FF0000"; }
+
+                newBtn.setToolTipText(String.format(
+                        "<html><body style='background-color:#333; color:white; padding:5px; font-family:Arial;'>" +
+                                "<b>Sát thương dự kiến:</b> %d HP<br>" +
+                                "<b>Độ hiệu quả:</b> <span style='color:%s;'>%s (x%.2f)</span>" +
+                                "</body></html>", estDamage, color, effText, eff));
+            } else if (move.isHealingMove()) {
+                newBtn.setToolTipText("<html><body style='background-color:#333; color:white; padding:5px;'>Hồi phục " + move.getHealAmount() + " HP</body></html>");
+            }
+
             newBtn.addActionListener(e -> {
                 showMovePanel(false);
                 enableMainButtons(true);
                 controller.playerMove(idx);
             });
-            
+
             movePanel.remove(moveButtons[i]);
             moveButtons[i] = newBtn;
             movePanel.add(newBtn, i);
@@ -323,22 +372,60 @@ public class CommandView extends JPanel {
         movePanel.revalidate();
         movePanel.repaint();
     }
-    
     /**
      * Reset và dựng lại toàn bộ danh sách chiêu thức mới khi đổi sang Pokemon khác
      */
     public void updateMovePanel(Pokemon pokemon) {
         movePanel.removeAll();
         moveButtons = new JButton[pokemon.getMoves().size()];
-        
+
+        // Lấy Pokemon của AI hiện tại để tính toán sát thương dự tính
+        Pokemon aiPokemon = controller.getAiTeam().getCurrentPokemon();
+
         for (int i = 0; i < moveButtons.length; i++) {
             final int idx = i;
             Move move = pokemon.getMoves().get(i);
+
             PixelCommandButton.Theme moveTheme = getTypeTheme(move.getType());
             String ppInfo = "PP:" + move.getPp() + "/" + move.getMaxPp();
             String powerInfo = String.valueOf(move.getPower());
+
+            // Xử lý khi chiêu thức hết PP (Tô xám và khóa nút)
+            boolean isUsable = move.isUsable();
+            if (!isUsable) {
+                moveTheme = PixelCommandButton.Theme.GRAY;
+            }
+
             moveButtons[i] = new PixelCommandButton(move.getName(), ppInfo, powerInfo, moveTheme);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
+            moveButtons[i].setEnabled(isUsable);
+
+            // Cài đặt hiển thị Tooltip (Sát thương và độ hiệu quả)
+            if (!isUsable) {
+                moveButtons[i].setToolTipText("Chiêu thức này đã hết PP!");
+            } else if (aiPokemon != null && move.getPower() > 0 && !move.isHealingMove()) {
+                int estDamage = move.calculateDamage(pokemon, aiPokemon);
+                double eff = model.TypeEffectiveness.getMultiplier(move.getType(), aiPokemon.getType1(), aiPokemon.getType2());
+
+                String effText = "Bình thường";
+                String color = "white";
+                if (eff > 1.0) { effText = "Siêu hiệu quả!"; color = "#00FF00"; }
+                else if (eff < 1.0 && eff > 0) { effText = "Không hiệu quả lắm..."; color = "#FF9900"; }
+                else if (eff == 0) { effText = "Không có tác dụng!"; color = "#FF0000"; }
+
+                // Dùng mã HTML để trang trí hộp Tooltip cho xịn xò
+                String tooltip = String.format(
+                        "<html><body style='background-color:#333; color:white; padding:5px; font-family:Arial;'>" +
+                                "<b>Sát thương dự kiến:</b> %d HP<br>" +
+                                "<b>Độ hiệu quả:</b> <span style='color:%s;'>%s (x%.2f)</span>" +
+                                "</body></html>",
+                        estDamage, color, effText, eff
+                );
+                moveButtons[i].setToolTipText(tooltip);
+            } else if (move.isHealingMove()) {
+                moveButtons[i].setToolTipText("<html><body style='background-color:#333; color:white; padding:5px;'>Hồi phục " + move.getHealAmount() + " HP</body></html>");
+            }
+
             moveButtons[i].addActionListener(e -> {
                 showMovePanel(false);
                 enableMainButtons(true);
@@ -346,7 +433,7 @@ public class CommandView extends JPanel {
             });
             movePanel.add(moveButtons[i]);
         }
-        
+
         movePanel.revalidate();
         movePanel.repaint();
     }
