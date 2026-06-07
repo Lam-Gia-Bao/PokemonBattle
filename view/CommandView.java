@@ -22,10 +22,12 @@ public class CommandView extends JPanel {
         this.controller = controller;
         this.message = messageView;
         this.battleView = battleView;
+        
         setLayout(null);
         setOpaque(false);
         setBounds(820, 520, 410, 160);
 
+        // Khởi tạo và định vị 4 nút hành động chính
         int btnW = 180, btnH = 50;
         fightBtn = createButton("FIGHT", 15, 15, btnW, btnH);
         bagBtn = createButton("BAG", 220, 15, btnW, btnH);
@@ -37,85 +39,82 @@ public class CommandView extends JPanel {
         add(pokeBtn);
         add(runBtn);
 
-        // Panel chiêu thức
+        // Khởi tạo panel chứa danh sách chiêu thức (mặc định ẩn)
         movePanel = new JPanel(new GridLayout(2, 2, 8, 8));
         movePanel.setBounds(10, 10, 400, 140);
         movePanel.setOpaque(false);
         movePanel.setVisible(false);
         moveButtons = new JButton[player.getMoves().size()];
 
-        // ============================================
-        // UC4.1: NGƯỜI CHƠI CHỌN NƯỚC ĐI
-        // ============================================
+        // Đổ dữ liệu chiêu thức của Pokemon hiện tại lên các nút bấm
         for (int i = 0; i < moveButtons.length; i++) {
             final int idx = i;
             Move move = player.getMoves().get(i);
             PixelCommandButton.Theme moveTheme = getTypeTheme(move.getType());
             String ppInfo = "PP:" + move.getPp() + "/" + move.getMaxPp();
             String powerInfo = String.valueOf(move.getPower());
+            
             moveButtons[i] = new PixelCommandButton(move.getName(), ppInfo, powerInfo, moveTheme);
             moveButtons[i].setFont(new Font("Arial", Font.BOLD, 18));
             
-            // UC4.1.1: Xử lý sự kiện click nút nước đi
             moveButtons[i].addActionListener(e -> {
-                showMovePanel(false);                   // Ẩn panel nước đi
-                enableMainButtons(true);                // Hiển thị lại 4 nút chính
-                
-                // UC4.1.2: Gọi BattleController.playerMove(moveIndex)
-                controller.playerMove(idx);
+                showMovePanel(false);                   // Chọn chiêu xong thì ẩn bảng chiêu thức đi
+                enableMainButtons(true);                // Bật lại tương tác cho 4 nút chính
+                controller.playerMove(idx);             // Gửi index chiêu thức sang cho controller xử lý trận đấu
             });
             movePanel.add(moveButtons[i]);
         }
-
         add(movePanel);
         
-        // ============================================================
-        // KHỞI TẠO PANEL POKÉMON MỚI
-        // ============================================================
+        // Khởi tạo panel hiển thị đội hình Pokemon trong sub-menu
         pokemonPanel = new JPanel(new GridLayout(2, 2, 8, 8));
         pokemonPanel.setBounds(10, 10, 400, 140);
         pokemonPanel.setOpaque(false);
         pokemonPanel.setVisible(false);
-        add(pokemonPanel); // Đã nằm an toàn bên trong Constructor
+        add(pokemonPanel);
         
-        // Quét đội hình và dựng giao diện (HP Bar, Highlight) lần đầu tiên
+        // Vẽ giao diện danh sách Pokemon (máu, trạng thái) lần đầu tiên
         updatePokemonPanel(playerTeam);
 
-        // Sự kiện nút chính
+        // Lắng nghe sự kiện click trên 4 nút điều hướng chính
         fightBtn.addActionListener(e -> {
             showMovePanel(true);
             enableMainButtons(false);
         });
+        
         bagBtn.addActionListener(e -> {
             disableAll();
             battleView.showTypeChart();
         });
+        
         pokeBtn.addActionListener(e -> {
-            // Cập nhật lại lượng HP và trạng thái mới nhất ngay khi ấn nút mở bảng
-            updatePokemonPanel(playerTeam); 
+            updatePokemonPanel(playerTeam);     // Cập nhật lại HP và trạng thái mới nhất trước khi hiển thị bảng
             showPokemonPanel(true);
             enableMainButtons(false);
         });
+        
         runBtn.addActionListener(e -> this.message.showCannotRunMessage());
     } 
 
-    // ============================================================
-    // HÀM CẬP NHẬT ĐỘNG (LIST 4 POKEMON + HIGHLIGHT + HP BAR)
-    // ============================================================
+    /**
+     * Làm mới toàn bộ UI của bảng đổi Pokemon (Tên, Trạng thái sống/ngất, Thanh HP Bar)
+     */
     public void updatePokemonPanel(PokemonTeam playerTeam) {
-        pokemonPanel.removeAll(); // Xóa các thành phần cũ để vẽ lại dữ liệu mới nhất
+        pokemonPanel.removeAll(); // Xóa UI cũ để render lại dữ liệu real-time
         pokemonButtons = new JButton[playerTeam.getTeamSize()];
         
         for (int i = 0; i < pokemonButtons.length; i++) {
             final int idx = i;
             Pokemon poke = playerTeam.getTeam().get(i);
             
-            // 1. HIGHLIGHT STATUS (Sống / Hạ gục)
+            // Xử lý nhãn trạng thái và giao diện nút dựa trên việc Pokemon còn khả năng chiến đấu hay không
             String status = poke.isFainted() ? " [FAINTED]" : " [ALIVE]";
             PixelCommandButton.Theme pokeTheme = poke.isFainted() ? PixelCommandButton.Theme.GRAY : getTypeTheme(poke.getType());
             
             pokemonButtons[i] = new PixelCommandButton(poke.getName() + status, pokeTheme);
             pokemonButtons[i].setFont(new Font("Arial", Font.BOLD, 14)); 
+            
+            // Khóa nút nếu Pokemon đã ngất hoặc chính là Pokemon đang tham chiến trên sân
             pokemonButtons[i].setEnabled(!poke.isFainted() && idx != playerTeam.getCurrentIndex());
             
             pokemonButtons[i].addActionListener(e -> {
@@ -125,7 +124,7 @@ public class CommandView extends JPanel {
                 updateMovePanel(controller.getPlayerTeam().getCurrentPokemon());
             });
             
-            // 2. SHOW HP BAR CHO MỖI POKEMON (JProgressBar)
+            // Khởi tạo thanh HP trực quan (JProgressBar) bên dưới nút bấm tương ứng
             JProgressBar hpBar = new JProgressBar(0, poke.getMaxHp());
             hpBar.setValue(poke.getHp());
             hpBar.setStringPainted(true);
@@ -133,21 +132,21 @@ public class CommandView extends JPanel {
             hpBar.setFont(new Font("Arial", Font.PLAIN, 10));
             hpBar.setPreferredSize(new Dimension(100, 14));
             
-            // Đổi màu sắc thanh HP trực quan theo % máu hiện tại
+            // Phân loại màu sắc thanh HP theo lượng máu hiện tại (Xanh > 50%, Vàng > 20%, Đỏ < 20%)
             if (poke.isFainted()) {
                 hpBar.setForeground(Color.DARK_GRAY);
             } else {
                 double hpPercent = (double) poke.getHp() / poke.getMaxHp();
                 if (hpPercent > 0.5) {
-                    hpBar.setForeground(new Color(46, 204, 113)); // Xanh lá
+                    hpBar.setForeground(new Color(46, 204, 113));
                 } else if (hpPercent > 0.2) {
-                    hpBar.setForeground(new Color(241, 196, 15));  // Vàng
+                    hpBar.setForeground(new Color(241, 196, 15));
                 } else {
-                    hpBar.setForeground(new Color(231, 76, 60));   // Đỏ
+                    hpBar.setForeground(new Color(231, 76, 60));
                 }
             }
             
-            // 3. GỘP NÚT BẤM VÀ HP BAR THÀNH MỘT Ô LƯỚI TRỰC QUAN
+            // Đóng gói nút bấm và thanh HP của Pokemon vào một ô Grid chung
             JPanel cellPanel = new JPanel(new BorderLayout(0, 2));
             cellPanel.setOpaque(false);
             cellPanel.add(pokemonButtons[i], BorderLayout.CENTER);
@@ -160,23 +159,17 @@ public class CommandView extends JPanel {
         pokemonPanel.repaint();
     }
 
+    /**
+     * Helper tạo nhanh các nút chức năng chính với bảng màu chuẩn Pixel Theme
+     */
     private JButton createButton(String text, int x, int y, int w, int h) {
         PixelCommandButton.Theme theme;
         switch (text) {
-            case "FIGHT":
-                theme = PixelCommandButton.Theme.PINK;
-                break;
-            case "BAG":
-                theme = PixelCommandButton.Theme.ORANGE;
-                break;
-            case "POKÉMON":
-                theme = PixelCommandButton.Theme.GREEN;
-                break;
-            case "RUN":
-                theme = PixelCommandButton.Theme.BLUE;
-                break;
-            default:
-                theme = PixelCommandButton.Theme.GRAY;
+            case "FIGHT":   theme = PixelCommandButton.Theme.PINK; break;
+            case "BAG":     theme = PixelCommandButton.Theme.ORANGE; break;
+            case "POKÉMON": theme = PixelCommandButton.Theme.GREEN; break;
+            case "RUN":     theme = PixelCommandButton.Theme.BLUE; break;
+            default:        theme = PixelCommandButton.Theme.GRAY;
         }
         PixelCommandButton btn = new PixelCommandButton(text, theme);
         btn.setFont(new Font("Arial", Font.BOLD, 22));
@@ -193,8 +186,7 @@ public class CommandView extends JPanel {
         movePanel.setVisible(show);
         if (show && moveButtons != null) {
             for (JButton b : moveButtons) {
-                if (b != null)
-                    b.setEnabled(true);
+                if (b != null) b.setEnabled(true);
             }
         }
         repaint();
@@ -233,6 +225,9 @@ public class CommandView extends JPanel {
         for (JButton b : pokemonButtons) if (b != null) b.setEnabled(false);
     }
     
+    /**
+     * Đồng bộ lại thông tin chiêu thức khi Pokemon hiện tại thay đổi chỉ số PP
+     */
     public void updateMoveButtons(Pokemon pokemon) {
         for (int i = 0; i < moveButtons.length && i < pokemon.getMoves().size(); i++) {
             Move move = pokemon.getMoves().get(i);
@@ -257,6 +252,9 @@ public class CommandView extends JPanel {
         movePanel.repaint();
     }
     
+    /**
+     * Reset và dựng lại toàn bộ danh sách chiêu thức mới khi đổi sang Pokemon khác
+     */
     public void updateMovePanel(Pokemon pokemon) {
         movePanel.removeAll();
         moveButtons = new JButton[pokemon.getMoves().size()];
@@ -287,6 +285,7 @@ public class CommandView extends JPanel {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
+        // Vẽ khung nền bo góc giả lập giao diện máy game cầm tay (Pixel/Retro Style)
         int pad = 4;
         int arc = 28;
         g2.setColor(new Color(70, 70, 70));
@@ -299,27 +298,30 @@ public class CommandView extends JPanel {
         g2.dispose();
     }
 
+    /**
+     * Mapper chuyển đổi hệ thuộc tính của Pokemon sang bảng màu Theme tương ứng cho UI nút bấm
+     */
     private PixelCommandButton.Theme getTypeTheme(PokemonType type) {
         switch (type) {
-            case NORMAL: return PixelCommandButton.Theme.TYPE_NORMAL;
-            case FIRE: return PixelCommandButton.Theme.TYPE_FIRE;
-            case WATER: return PixelCommandButton.Theme.TYPE_WATER;
-            case GRASS: return PixelCommandButton.Theme.TYPE_GRASS;
+            case NORMAL:   return PixelCommandButton.Theme.TYPE_NORMAL;
+            case FIRE:     return PixelCommandButton.Theme.TYPE_FIRE;
+            case WATER:    return PixelCommandButton.Theme.TYPE_WATER;
+            case GRASS:    return PixelCommandButton.Theme.TYPE_GRASS;
             case ELECTRIC: return PixelCommandButton.Theme.TYPE_ELECTRIC;
-            case ICE: return PixelCommandButton.Theme.TYPE_ICE;
+            case ICE:      return PixelCommandButton.Theme.TYPE_ICE;
             case FIGHTING: return PixelCommandButton.Theme.TYPE_FIGHTING;
-            case POISON: return PixelCommandButton.Theme.TYPE_POISON;
-            case GROUND: return PixelCommandButton.Theme.TYPE_GROUND;
-            case FLYING: return PixelCommandButton.Theme.TYPE_FLYING;
-            case PSYCHIC: return PixelCommandButton.Theme.TYPE_PSYCHIC;
-            case BUG: return PixelCommandButton.Theme.TYPE_BUG;
-            case ROCK: return PixelCommandButton.Theme.TYPE_ROCK;
-            case GHOST: return PixelCommandButton.Theme.TYPE_GHOST;
-            case DRAGON: return PixelCommandButton.Theme.TYPE_DRAGON;
-            case DARK: return PixelCommandButton.Theme.TYPE_DARK;
-            case STEEL: return PixelCommandButton.Theme.TYPE_STEEL;
-            case FAIRY: return PixelCommandButton.Theme.TYPE_FAIRY;
-            default: return PixelCommandButton.Theme.GRAY;
+            case POISON:   return PixelCommandButton.Theme.TYPE_POISON;
+            case GROUND:   return PixelCommandButton.Theme.TYPE_GROUND;
+            case FLYING:   return PixelCommandButton.Theme.TYPE_FLYING;
+            case PSYCHIC:  return PixelCommandButton.Theme.TYPE_PSYCHIC;
+            case BUG:      return PixelCommandButton.Theme.TYPE_BUG;
+            case ROCK:     return PixelCommandButton.Theme.TYPE_ROCK;
+            case GHOST:    return PixelCommandButton.Theme.TYPE_GHOST;
+            case DRAGON:   return PixelCommandButton.Theme.TYPE_DRAGON;
+            case DARK:     return PixelCommandButton.Theme.TYPE_DARK;
+            case STEEL:    return PixelCommandButton.Theme.TYPE_STEEL;
+            case FAIRY:    return PixelCommandButton.Theme.TYPE_FAIRY;
+            default:       return PixelCommandButton.Theme.GRAY;
         }
     }
 }
