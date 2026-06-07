@@ -6,11 +6,17 @@ import view.BattleView;
 public class BattleController {
     private final PokemonTeam playerTeam;
     private final PokemonTeam aiTeam;
+    private final Inventory playerInventory;
     private final BattleView view;
 
     public BattleController(PokemonTeam playerTeam, PokemonTeam aiTeam) {
+        this(playerTeam, aiTeam, ItemData.createDefaultInventory());
+    }
+
+    public BattleController(PokemonTeam playerTeam, PokemonTeam aiTeam, Inventory playerInventory) {
         this.playerTeam = playerTeam;
         this.aiTeam = aiTeam;
+        this.playerInventory = playerInventory;
         this.view = new BattleView(this, playerTeam, aiTeam);
     }
 
@@ -107,6 +113,26 @@ public class BattleController {
         }
     }
 
+    public void playerUseItem(int itemIndex) {
+        Pokemon player = playerTeam.getCurrentPokemon();
+        Pokemon ai = aiTeam.getCurrentPokemon();
+        if (player == null || ai == null) return;
+
+        view.disableAllButtons();
+
+        ItemUseResult result = playerInventory.useItem(itemIndex, player);
+        view.addMessageToQueue(result.getMessage());
+        view.updateHPBars();
+        view.updateInventoryDisplay();
+
+        if (!result.isSuccess()) {
+            view.startMessageQueue(() -> view.enableMoveButtons());
+            return;
+        }
+
+        aiMove();
+    }
+
     // ============================================
     // UC4.7.3: LƯỢt CỦA AI (Phản công)
     // ============================================
@@ -162,5 +188,9 @@ public class BattleController {
     
     public PokemonTeam getAiTeam() {
         return aiTeam;
+    }
+
+    public Inventory getPlayerInventory() {
+        return playerInventory;
     }
 }

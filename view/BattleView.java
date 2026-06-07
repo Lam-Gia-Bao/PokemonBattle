@@ -46,7 +46,7 @@ public class BattleView extends JFrame {
         aiBar = new HealthBarView(currentAi, false);
         playerBar = new HealthBarView(currentPlayer, true);
         message = new MessageView("");
-        command = new CommandView(controller, currentPlayer, playerTeam, message, this);
+        command = new CommandView(controller, currentPlayer, playerTeam, controller.getPlayerInventory(), message, this);
         aiMoveView = new AIMoveView(currentAi);
 
         loadImg.add(aiBar);
@@ -123,6 +123,12 @@ public class BattleView extends JFrame {
     public void updatePlayerMoveDisplay() {
         if (command != null) {
             command.updateMoveButtons(playerTeam.getCurrentPokemon());
+        }
+    }
+
+    public void updateInventoryDisplay() {
+        if (command != null) {
+            command.updateBagPanel();
         }
     }
     

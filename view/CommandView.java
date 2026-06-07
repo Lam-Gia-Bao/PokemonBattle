@@ -3,6 +3,8 @@ package view;
 import controller.BattleController;
 import java.awt.*;
 import javax.swing.*;
+import model.Inventory;
+import model.InventorySlot;
 import model.Move;
 import model.Pokemon;
 import model.PokemonTeam;
@@ -14,12 +16,16 @@ public class CommandView extends JPanel {
     private JButton[] moveButtons;
     private JPanel pokemonPanel;
     private JButton[] pokemonButtons;
+    private JPanel bagPanel;
+    private JButton[] itemButtons;
     private final BattleController controller;
+    private final Inventory inventory;
     private final MessageView message;
     private final BattleView battleView;
 
-    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, MessageView messageView, BattleView battleView) {
+    public CommandView(BattleController controller, Pokemon player, PokemonTeam playerTeam, Inventory inventory, MessageView messageView, BattleView battleView) {
         this.controller = controller;
+        this.inventory = inventory;
         this.message = messageView;
         this.battleView = battleView;
         
@@ -76,6 +82,13 @@ public class CommandView extends JPanel {
         // Vẽ giao diện danh sách Pokemon (máu, trạng thái) lần đầu tiên
         updatePokemonPanel(playerTeam);
 
+        bagPanel = new JPanel(new GridLayout(2, 2, 8, 8));
+        bagPanel.setBounds(10, 10, 400, 140);
+        bagPanel.setOpaque(false);
+        bagPanel.setVisible(false);
+        add(bagPanel);
+        updateBagPanel();
+
         // Lắng nghe sự kiện click trên 4 nút điều hướng chính
         fightBtn.addActionListener(e -> {
             showMovePanel(true);
@@ -83,8 +96,13 @@ public class CommandView extends JPanel {
         });
         
         bagBtn.addActionListener(e -> {
-            disableAll();
-            battleView.showTypeChart();
+            if (!inventory.hasUsableItems()) {
+                battleView.showNoBagItemsMessage();
+                return;
+            }
+            updateBagPanel();
+            showBagPanel(true);
+            enableMainButtons(false);
         });
         
         pokeBtn.addActionListener(e -> {
@@ -95,6 +113,33 @@ public class CommandView extends JPanel {
         
         runBtn.addActionListener(e -> this.message.showCannotRunMessage());
     } 
+
+    public void updateBagPanel() {
+        bagPanel.removeAll();
+        int itemCount = Math.min(4, inventory.getSlots().size());
+        itemButtons = new JButton[itemCount];
+
+        for (int i = 0; i < itemCount; i++) {
+            final int idx = i;
+            InventorySlot slot = inventory.getSlots().get(i);
+            String qtyInfo = "x" + slot.getQuantity();
+
+            itemButtons[i] = new PixelCommandButton(slot.getItem().getName(), qtyInfo, slot.getItem().getDescription(), PixelCommandButton.Theme.ORANGE);
+            itemButtons[i].setFont(new Font("Arial", Font.BOLD, 16));
+            itemButtons[i].setEnabled(slot.hasStock());
+
+            itemButtons[i].addActionListener(e -> {
+                showBagPanel(false);
+                enableMainButtons(true);
+                controller.playerUseItem(idx);
+            });
+
+            bagPanel.add(itemButtons[i]);
+        }
+
+        bagPanel.revalidate();
+        bagPanel.repaint();
+    }
 
     /**
      * Làm mới toàn bộ UI của bảng đổi Pokemon (Tên, Trạng thái sống/ngất, Thanh HP Bar)
@@ -184,6 +229,8 @@ public class CommandView extends JPanel {
         runBtn.setVisible(!show);
         
         movePanel.setVisible(show);
+        if (bagPanel != null) bagPanel.setVisible(false);
+        if (pokemonPanel != null) pokemonPanel.setVisible(false);
         if (show && moveButtons != null) {
             for (JButton b : moveButtons) {
                 if (b != null) b.setEnabled(true);
@@ -199,6 +246,20 @@ public class CommandView extends JPanel {
         runBtn.setVisible(!show);
         
         pokemonPanel.setVisible(show);
+        if (bagPanel != null) bagPanel.setVisible(false);
+        if (movePanel != null) movePanel.setVisible(false);
+        repaint();
+    }
+
+    public void showBagPanel(boolean show) {
+        fightBtn.setVisible(!show);
+        bagBtn.setVisible(!show);
+        pokeBtn.setVisible(!show);
+        runBtn.setVisible(!show);
+
+        bagPanel.setVisible(show);
+        if (movePanel != null) movePanel.setVisible(false);
+        if (pokemonPanel != null) pokemonPanel.setVisible(false);
         repaint();
     }
 
@@ -217,12 +278,23 @@ public class CommandView extends JPanel {
         if (pokemonButtons != null) {
             for (JButton b : pokemonButtons) if (b != null) b.setEnabled(true);
         }
+        if (itemButtons != null) {
+            for (int i = 0; i < itemButtons.length; i++) {
+                InventorySlot slot = inventory.getSlot(i);
+                if (itemButtons[i] != null && slot != null) {
+                    itemButtons[i].setEnabled(slot.hasStock());
+                }
+            }
+        }
     }
 
     public void disableAll() {
         enableMainButtons(false);
         for (JButton b : moveButtons) if (b != null) b.setEnabled(false);
         for (JButton b : pokemonButtons) if (b != null) b.setEnabled(false);
+        if (itemButtons != null) {
+            for (JButton b : itemButtons) if (b != null) b.setEnabled(false);
+        }
     }
     
     /**
