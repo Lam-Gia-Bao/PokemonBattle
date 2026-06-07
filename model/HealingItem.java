@@ -25,11 +25,13 @@ public class HealingItem implements Item {
 
     @Override
     public boolean canUse(Pokemon target) {
+        // UC9.9.1: Healing item chi dung duoc cho Pokemon con song va chua day HP.
         return target != null && !target.isFainted() && target.getHp() < target.getMaxHp();
     }
 
     @Override
     public ItemUseResult use(Pokemon target) {
+        // UC9.9: Thuc thi effect cua item hoi mau len Pokemon target.
         if (target == null) {
             return ItemUseResult.failure("Khong co Pokemon de dung vat pham!");
         }
@@ -41,6 +43,7 @@ public class HealingItem implements Item {
         }
 
         int beforeHp = target.getHp();
+        // UC9.10: Goi Pokemon.heal de cap nhat HP va clamp theo max HP.
         target.heal(healAmount);
         int healed = target.getHp() - beforeHp;
         return ItemUseResult.success(name + " da hoi " + healed + " HP cho " + target.getName() + "!");

@@ -21,6 +21,7 @@ public class InventorySlot {
     }
 
     public boolean hasStock() {
+        // UC9.2.1 / UC9.8.2: Slot con so luong thi item moi kha dung.
         return quantity > 0;
     }
 
@@ -31,6 +32,7 @@ public class InventorySlot {
     }
 
     public boolean consumeOne() {
+        // UC9.11: Tru 1 item sau khi su dung thanh cong.
         if (quantity <= 0) {
             return false;
         }

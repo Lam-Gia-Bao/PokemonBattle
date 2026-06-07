@@ -114,22 +114,31 @@ public class BattleController {
     }
 
     public void playerUseItem(int itemIndex) {
+        // UC9.7: Controller nhan yeu cau dung item tu CommandView.
+        // UC9.7.1: Lay Pokemon hien tai cua Player va AI.
         Pokemon player = playerTeam.getCurrentPokemon();
         Pokemon ai = aiTeam.getCurrentPokemon();
         if (player == null || ai == null) return;
 
+        // UC9.7.2: Khoa input trong luc xu ly item.
         view.disableAllButtons();
 
+        // UC9.8: Goi Inventory de validate slot, dung item va tru quantity neu thanh cong.
         ItemUseResult result = playerInventory.useItem(itemIndex, player);
+        // UC9.12: Dua ket qua dung item vao hang doi thong bao.
         view.addMessageToQueue(result.getMessage());
+        // UC9.13: Cap nhat thanh HP sau khi item co the da hoi mau.
         view.updateHPBars();
+        // UC9.14: Cap nhat lai so luong item tren Bag UI.
         view.updateInventoryDisplay();
 
         if (!result.isSuccess()) {
+            // UC9.15: Dung item that bai thi khong mat luot, hien message va tra quyen Player.
             view.startMessageQueue(() -> view.enableMoveButtons());
             return;
         }
 
+        // UC9.16: Dung item thanh cong thi mat luot va chuyen sang luot AI (UC7).
         aiMove();
     }
 

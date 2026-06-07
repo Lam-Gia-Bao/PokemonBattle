@@ -87,6 +87,7 @@ public class Pokemon {
     }
 
     public void heal(int amount) {
+        // UC9.10: Item hoi mau cap nhat HP nhung khong vuot qua maxHp.
         this.hp += amount;
         if (this.hp > this.maxHp) this.hp = this.maxHp;
     }

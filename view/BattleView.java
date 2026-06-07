@@ -86,6 +86,7 @@ public class BattleView extends JFrame {
     
     // UC4.6.3: Cập nhật thanh máu (HP bars) cho cả hai Pokemon
     public void updateHPBars() {
+        // UC9.13: Cap nhat HP bar sau khi item hoi mau.
         playerBar.updateHP();      // Cập nhật HP bar của Player
         aiBar.updateHP();          // Cập nhật HP bar của AI
     }
@@ -127,6 +128,7 @@ public class BattleView extends JFrame {
     }
 
     public void updateInventoryDisplay() {
+        // UC9.14: Dong bo lai UI tui do sau khi item co the da bi tru quantity.
         if (command != null) {
             command.updateBagPanel();
         }
@@ -138,6 +140,7 @@ public class BattleView extends JFrame {
     }
     
     public void showNoBagItemsMessage() {
+        // UC9.2.2: Bag khong co item kha dung thi hien thong bao.
         message.showNoBagItemsMessage();
     }
     
@@ -146,6 +149,7 @@ public class BattleView extends JFrame {
     }
     
     public void addMessageToQueue(String msg) {
+        // UC9.12: Dua thong bao ket qua dung item vao message queue.
         message.addMessageToQueue(msg);
     }
     

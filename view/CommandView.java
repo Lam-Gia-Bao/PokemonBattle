@@ -95,11 +95,15 @@ public class CommandView extends JPanel {
             enableMainButtons(false);
         });
         
+        // UC9.1: Player chon BAG tu command menu.
         bagBtn.addActionListener(e -> {
+            // UC9.2: Kiem tra tui do co item con so luong hay khong.
             if (!inventory.hasUsableItems()) {
+                // UC9.2.2: Khong co item kha dung -> hien thong bao.
                 battleView.showNoBagItemsMessage();
                 return;
             }
+            // UC9.3-UC9.5: Render danh sach item, hien bag panel, khoa main buttons.
             updateBagPanel();
             showBagPanel(true);
             enableMainButtons(false);
@@ -137,7 +141,9 @@ public class CommandView extends JPanel {
     }
 
     public void updateBagPanel() {
+        // UC9.3: Lam moi UI tui do dua tren Inventory hien tai.
         bagPanel.removeAll();
+        // UC9.3.1: Lay danh sach slot item de ve toi da 4 nut theo layout 2x2.
         int itemCount = Math.min(4, inventory.getSlots().size());
         itemButtons = new JButton[itemCount];
 
@@ -146,13 +152,17 @@ public class CommandView extends JPanel {
             InventorySlot slot = inventory.getSlots().get(i);
             String qtyInfo = "x" + slot.getQuantity();
 
+            // UC9.3.2: Lay ten item, mo ta, quantity va trang thai con hang.
             itemButtons[i] = new PixelCommandButton(slot.getItem().getName(), qtyInfo, slot.getItem().getDescription(), PixelCommandButton.Theme.ORANGE);
             itemButtons[i].setFont(new Font("Arial", Font.BOLD, 16));
             itemButtons[i].setEnabled(slot.hasStock());
 
+            // UC9.6: Player chon mot item trong tui do.
             itemButtons[i].addActionListener(e -> {
+                // UC9.6.1: An tui do truoc khi controller xu ly item.
                 showBagPanel(false);
                 enableMainButtons(true);
+                // UC9.7: Gui itemIndex sang controller de dung item.
                 controller.playerUseItem(idx);
             });
 
@@ -274,6 +284,7 @@ public class CommandView extends JPanel {
     }
 
     public void showBagPanel(boolean show) {
+        // UC9.4: Hien/an bag panel va dam bao cac submenu khac khong bi chong len.
         fightBtn.setVisible(!show);
         bagBtn.setVisible(!show);
         pokeBtn.setVisible(!show);

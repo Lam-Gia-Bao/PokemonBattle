@@ -15,6 +15,7 @@ public class InventoryTest {
             new TestCase("Khong consume item khi Pokemon day HP", InventoryTest::shouldNotConsumeItemWhenPokemonIsAlreadyFullHp),
             new TestCase("Khong consume item khi Pokemon da fainted", InventoryTest::shouldNotConsumeItemWhenPokemonIsFainted),
             new TestCase("Reject item index khong hop le", InventoryTest::shouldRejectInvalidItemIndex),
+            new TestCase("Khong dung item khi quantity bang 0", InventoryTest::shouldRejectItemWithZeroQuantity),
             new TestCase("Tao default inventory dung du lieu", InventoryTest::shouldCreateDefaultInventory)
         };
 
@@ -123,6 +124,19 @@ public class InventoryTest {
 
         assertFalse(result.isSuccess(), "Invalid item index should fail");
         assertEquals(60, pokemon.getHp(), "Invalid item index should not change Pokemon HP");
+    }
+
+    private static void shouldRejectItemWithZeroQuantity() {
+        Inventory inventory = new Inventory();
+        inventory.addItem(new HealingItem("Potion", 20), 1);
+        inventory.getSlot(0).consumeOne();
+        Pokemon pokemon = damagedPokemon(40);
+
+        ItemUseResult result = inventory.useItem(0, pokemon);
+
+        assertFalse(result.isSuccess(), "Item with zero quantity should fail");
+        assertEquals(60, pokemon.getHp(), "Item with zero quantity should not change Pokemon HP");
+        assertEquals(0, inventory.getSlot(0).getQuantity(), "Item with zero quantity should stay at zero");
     }
 
     private static void shouldCreateDefaultInventory() {
