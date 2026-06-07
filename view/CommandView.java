@@ -112,7 +112,29 @@ public class CommandView extends JPanel {
         });
         
         runBtn.addActionListener(e -> this.message.showCannotRunMessage());
-    } 
+
+        // --- CÀI ĐẶT PHÍM TẮT 1, 2, 3, 4 CHO CHIÊU THỨC ---
+        InputMap im = movePanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = movePanel.getActionMap();
+
+        for (int i = 0; i < 4; i++) {
+            final int moveIndex = i;
+            // Gắn phím 1, 2, 3, 4 cho vị trí 0, 1, 2, 3 trong mảng Move
+            im.put(KeyStroke.getKeyStroke(String.valueOf(moveIndex + 1)), "useMove" + moveIndex);
+
+            am.put("useMove" + moveIndex, new AbstractAction() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent e) {
+                    // Kiểm tra xem bảng Move có đang mở và nút đó có xài được không
+                    if (movePanel.isVisible() && moveIndex < moveButtons.length &&
+                            moveButtons[moveIndex] != null && moveButtons[moveIndex].isEnabled()) {
+
+                        moveButtons[moveIndex].doClick(); // Tự động bấm nút
+                    }
+                }
+            });
+        }
+    }
 
     public void updateBagPanel() {
         bagPanel.removeAll();
